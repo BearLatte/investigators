@@ -6,8 +6,9 @@ class BaseView extends StatelessWidget {
   final Widget child;
   final double appBarAdditionalHeight;
   final Widget? appBarBottomWidget;
+  final Widget? leading;
 
-  const BaseView({super.key, required this.child, this.appBarAdditionalHeight = 0, this.appBarBottomWidget});
+  const BaseView({super.key, required this.child, this.appBarAdditionalHeight = 0, this.appBarBottomWidget, this.leading});
 
   @override
   Widget build(BuildContext context) {
@@ -16,6 +17,7 @@ class BaseView extends StatelessWidget {
         backgroundColor: Global.instance.themeColor,
         shape: const RoundedRectangleBorder(borderRadius: BorderRadius.only(bottomRight: Radius.circular(100))),
         clipBehavior: Clip.hardEdge,
+        leading: leading,
         title: Row(
           children: [
             Icon(Icons.account_circle_sharp, size: 40, color: HexColor('#87D0FF')),

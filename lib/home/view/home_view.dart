@@ -4,7 +4,9 @@ import 'package:flutter/painting.dart';
 import 'package:get/get.dart';
 import 'package:investigators/common/base_view.dart';
 import 'package:investigators/home/controller/home_view_controller.dart';
-import 'package:investigators/home/view/tab_item_view.dart';
+import 'package:investigators/home/view/interview_view.dart';
+import 'package:investigators/home/view/appointment_view.dart';
+import 'package:investigators/home/view/returned_view.dart';
 import 'package:investigators/utils/hex_color.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
@@ -17,7 +19,7 @@ class HomeView extends StatelessWidget {
       init: Get.put(HomeViewController()),
       builder: (controller) => BaseView(
         appBarAdditionalHeight: 90,
-        appBarBottomWidget: Container(
+        appBarBottomWidget: SizedBox(
           height: 90,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -47,11 +49,7 @@ class HomeView extends StatelessWidget {
         ),
         child: TabBarView(
           controller: controller.tabController,
-          children: const [
-            TabItemView(type: ItemType.appointment),
-            TabItemView(type: ItemType.interview),
-            TabItemView(type: ItemType.returned),
-          ],
+          children: const [AppointmentView(), InterviewView(), ReturnedView()],
         ),
       ),
     );

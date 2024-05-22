@@ -7,7 +7,9 @@ import 'package:investigators/router/index.dart';
 import 'package:investigators/utils/global.dart';
 import 'package:investigators/utils/hex_color.dart';
 
-void mainCom() {
+void mainCom() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Global.instance.initGlobalInfo();
   runApp(const Application());
 }
 
@@ -20,7 +22,7 @@ class Application extends StatelessWidget {
     return GetMaterialApp(
       title: 'Investigators',
       debugShowCheckedModeBanner: false,
-      initialRoute: ApplicationRoutes.initial,
+      initialRoute: Global.instance.isLogin ? ApplicationRoutes.tab : ApplicationRoutes.login,
       defaultTransition: Transition.native,
       getPages: ApplicationPages.routes,
       theme: ThemeData(
@@ -33,7 +35,6 @@ class Application extends StatelessWidget {
         ),
       ),
       onInit: () async {
-        await Global.instance.initGlobalInfo();
         Global.instance.initNetwork(baseUrl: env.apiBaseURL);
       },
       builder: EasyLoading.init(),
