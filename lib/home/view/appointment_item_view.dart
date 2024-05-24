@@ -58,7 +58,7 @@ class _AppointmentItemViewState extends State<AppointmentItemView> {
     return Container(
       margin: const EdgeInsets.only(top: 20),
       padding: const EdgeInsets.only(left: 8, right: 8, top: 10),
-      decoration: BoxDecoration(color: HexColor('#F5F6FF'), borderRadius: BorderRadius.circular(8)),
+      decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(8)),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
@@ -122,5 +122,4 @@ class _AppointmentItemViewState extends State<AppointmentItemView> {
       ),
     );
   }
-
 }

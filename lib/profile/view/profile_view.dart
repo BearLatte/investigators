@@ -14,6 +14,7 @@ class ProfileView extends StatelessWidget {
       init: Get.put(ProfileController()),
       builder: (controller) => BaseView(
         titleIcon: Icons.account_circle_sharp,
+        title: controller.user?.name,
         appBarAdditionalHeight: 120,
         appBarBottomWidget: SizedBox(
           height: 120,
@@ -25,7 +26,7 @@ class ProfileView extends StatelessWidget {
             Container(
               height: 15,
               margin: const EdgeInsets.only(left: 20, top: 10, bottom: 20),
-              child: const Text('登录账号占位', style: TextStyle(color: Colors.white, fontSize: 12)),
+              child: Text(controller.user?.telephone == null ? '' : '+63 ${controller.user!.telephone}', style: const TextStyle(color: Colors.white, fontSize: 12)),
             ),
             Container(
               height: 35,

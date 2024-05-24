@@ -37,7 +37,7 @@ class BaseView extends StatelessWidget {
         ),
         bottom: PreferredSize(preferredSize: Size.fromHeight(appBarAdditionalHeight), child: appBarBottomWidget ?? const SizedBox()),
       ),
-      body: Container(color: Colors.white, child: child),
+      body: Container(child: child),
     );
   }
 }

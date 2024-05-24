@@ -7,6 +7,8 @@ import 'package:flutter/material.dart' show debugPrint;
 import 'package:investigators/models/appointment_pending_list.dart';
 import 'package:investigators/models/interview_pending_list.dart';
 import 'package:investigators/models/returned_list.dart';
+import 'package:investigators/models/sign_history_model.dart';
+import 'package:investigators/models/user_model.dart';
 
 JsonConvert jsonConvert = JsonConvert();
 
@@ -167,6 +169,12 @@ class JsonConvert {
     if (<ReturnedListDataIdentityInfo>[] is M) {
       return data.map<ReturnedListDataIdentityInfo>((Map<String, dynamic> e) => ReturnedListDataIdentityInfo.fromJson(e)).toList() as M;
     }
+    if (<SignHistoryModel>[] is M) {
+      return data.map<SignHistoryModel>((Map<String, dynamic> e) => SignHistoryModel.fromJson(e)).toList() as M;
+    }
+    if (<UserModel>[] is M) {
+      return data.map<UserModel>((Map<String, dynamic> e) => UserModel.fromJson(e)).toList() as M;
+    }
 
     debugPrint("$M not found");
 
@@ -198,6 +206,8 @@ class JsonConvertClassCollection {
     (ReturnedList).toString(): ReturnedList.fromJson,
     (ReturnedListData).toString(): ReturnedListData.fromJson,
     (ReturnedListDataIdentityInfo).toString(): ReturnedListDataIdentityInfo.fromJson,
+    (SignHistoryModel).toString(): SignHistoryModel.fromJson,
+    (UserModel).toString(): UserModel.fromJson,
   };
 
   bool containsKey(String type) {

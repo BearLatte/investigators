@@ -7,6 +7,8 @@ import 'package:investigators/models/appointment_pending_list.dart';
 import 'package:investigators/models/base_response.dart';
 import 'package:investigators/models/interview_pending_list.dart';
 import 'package:investigators/models/returned_list.dart';
+import 'package:investigators/models/sign_history_model.dart';
+import 'package:investigators/models/user_model.dart';
 import 'package:investigators/router/index.dart';
 import 'package:investigators/utils/field_null_or_empty.dart';
 import 'package:investigators/utils/global.dart';
@@ -52,7 +54,7 @@ class NetworkService {
   static Future<AppointmentPendingList?> fetchAppointmentPendingList(int page) async {
     BaseResponse response = await _get<AppointmentPendingList>(
       '/inv/appointment/list',
-      {'page': page.toString(), 'page_size': '10'},
+      params: {'page': page.toString(), 'page_size': '10'},
       isNeedLoading: false,
     );
     if (response.code != 1) {
@@ -64,7 +66,7 @@ class NetworkService {
 
   // 待面签列表
   static Future<InterviewPendingList?> fetchInterviewPendingList(int page) async {
-    BaseResponse response = await _get<InterviewPendingList>('/inv/pending/list', {'page': page.toString(), 'page_size': '10'}, isNeedLoading: false);
+    BaseResponse response = await _get<InterviewPendingList>('/inv/pending/list', params: {'page': page.toString(), 'page_size': '10'}, isNeedLoading: false);
     if (response.code != 1) {
       CommonSnackBar.showSnackBar(response.msg, type: SnackType.error);
       return null;
@@ -74,7 +76,7 @@ class NetworkService {
 
   // 退回列表
   static Future<ReturnedList?> fetchReturnedList(int page) async {
-    BaseResponse response = await _get<ReturnedList>('/inv/revert/list', {'page': page.toString(), 'page_size': '10'}, isNeedLoading: false);
+    BaseResponse response = await _get<ReturnedList>('/inv/revert/list', params: {'page': page.toString(), 'page_size': '10'}, isNeedLoading: false);
     if (response.code != 1) {
       CommonSnackBar.showSnackBar(response.msg, type: SnackType.error);
       return null;
@@ -99,7 +101,19 @@ class NetworkService {
     return response.code == 1;
   }
 
-  static Future<BaseResponse> _get<T>(String path, Map<String, dynamic> params, {bool isNeedLoading = true}) async {
+  // 获取个人信息
+  static Future<UserModel> fetchUserInfo() async {
+    BaseResponse response = await _get<UserModel>('/inv/my/info');
+    return response.data;
+  }
+
+  // 获取历史三个月的面签记录
+  static Future<List<SignHistoryModel>> fetchHistory() async {
+    BaseResponse response = await _get<List<SignHistoryModel>>('/inv/my/signHistory');
+    return response.data;
+  }
+
+  static Future<BaseResponse> _get<T>(String path, {Map<String, dynamic>? params, bool isNeedLoading = true}) async {
     if (isNeedLoading) {
       EasyLoading.show(status: 'loading...', maskType: EasyLoadingMaskType.black);
     }
@@ -146,7 +160,8 @@ class NetworkService {
     return result;
   }
 
-  static Future<Map<String, dynamic>> _encryptParametersValue(Map<String, dynamic> params) async {
+  static Future<Map<String, dynamic>> _encryptParametersValue(Map<String, dynamic>? params) async {
+    params = params ?? {};
     Map<String, dynamic> encryptedParams = {};
     for (var key in params.keys) {
       if (!isNullOrEmpty(params[key])) {

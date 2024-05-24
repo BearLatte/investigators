@@ -15,7 +15,7 @@ class ReturnedItemView extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 10),
       margin: const EdgeInsets.only(left: 12, top: 12, right: 12),
-      decoration: BoxDecoration(color: HexColor('#F5F6FF'), borderRadius: BorderRadius.circular(8)),
+      decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(8)),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
