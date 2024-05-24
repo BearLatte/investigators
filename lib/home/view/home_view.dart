@@ -18,31 +18,26 @@ class HomeView extends StatelessWidget {
     return GetBuilder<HomeViewController>(
       init: Get.put(HomeViewController()),
       builder: (controller) => BaseView(
-        appBarAdditionalHeight: 90,
+        titleIcon: Icons.sign_language_rounded,
+        title: 'Investigators',
+        appBarAdditionalHeight: 57,
         appBarBottomWidget: SizedBox(
-          height: 90,
+          height: 57,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              Container(
-                padding: const EdgeInsets.only(left: 12),
-                child: const Text('Investigators', style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold)),
-              ),
-              Container(
-                margin: const EdgeInsets.only(top: 10),
-                child: TabBar(
-                  controller: controller.tabController,
-                  padding: const EdgeInsets.only(right: 40),
-                  tabs: controller.tabs,
-                  dividerHeight: 0,
-                  indicatorWeight: 1,
-                  indicatorColor: Colors.white,
-                  indicatorSize: TabBarIndicatorSize.label,
-                  indicatorPadding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
-                  labelPadding: const EdgeInsets.fromLTRB(0, 0, 10, 2),
-                  labelColor: Colors.white,
-                  unselectedLabelColor: HexColor('#4F4F4F'),
-                ),
+              TabBar(
+                controller: controller.tabController,
+                padding: const EdgeInsets.only(right: 40),
+                tabs: controller.tabs,
+                dividerHeight: 0,
+                indicatorWeight: 1,
+                indicatorColor: Colors.white,
+                indicatorSize: TabBarIndicatorSize.label,
+                indicatorPadding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
+                labelPadding: const EdgeInsets.fromLTRB(0, 0, 10, 2),
+                labelColor: Colors.white,
+                unselectedLabelColor: HexColor('#9FB6C6'),
               )
             ],
           ),

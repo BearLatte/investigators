@@ -10,14 +10,14 @@ import '../../utils/hex_color.dart';
 class AppointmentItemView extends StatefulWidget {
   final AppointmentPendingListData data;
   final void Function(String phone) callUpAction;
-  final void Function(String itemId)? subscribeAction;
+  final void Function(AppointmentPendingListData item) subscribeAction;
   final void Function(String itemId)? forbiddenAction;
 
   const AppointmentItemView({
     super.key,
     required this.data,
     required this.callUpAction,
-    this.subscribeAction,
+    required this.subscribeAction,
     this.forbiddenAction,
   });
 
@@ -35,7 +35,9 @@ class _AppointmentItemViewState extends State<AppointmentItemView> {
     _remindTime = int.parse(widget.data.remainTime);
     _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
       if (_remindTime > 0) {
-        _remindTime--;
+        setState(() {
+          _remindTime--;
+        });
       } else {
         _timer.cancel();
       }
@@ -55,7 +57,6 @@ class _AppointmentItemViewState extends State<AppointmentItemView> {
     String seconds = (_remindTime % 60).toString().padZero;
     return Container(
       margin: const EdgeInsets.only(top: 20),
-      // padding: const EdgeInsets.symmetric(horizontal: 8),
       padding: const EdgeInsets.only(left: 8, right: 8, top: 10),
       decoration: BoxDecoration(color: HexColor('#F5F6FF'), borderRadius: BorderRadius.circular(8)),
       child: Column(
@@ -66,19 +67,19 @@ class _AppointmentItemViewState extends State<AppointmentItemView> {
               padding: const EdgeInsets.only(left: 8, bottom: 5),
               decoration: BoxDecoration(border: Border(bottom: BorderSide(color: HexColor('#0370BA')))),
               child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                Text('Contact the Client', style: TextStyle(color: HexColor('#74839C'), fontSize: 13, fontWeight: FontWeight.bold)),
+                Text('Contact the Client', style: TextStyle(color: Global.instance.textPrimaryColor, fontSize: 13, fontWeight: FontWeight.bold)),
                 Text('$hours : $minutes : $seconds', style: TextStyle(color: HexColor('#FF3254'), fontSize: 13, fontWeight: FontWeight.bold))
               ])),
           Container(
               alignment: Alignment.topLeft,
               padding: const EdgeInsets.only(top: 8, left: 8),
               child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                Text('Order ID: ${widget.data.signRecordId}', style: TextStyle(color: HexColor('#74839C'), fontSize: 13)),
-                Text('Name: ${widget.data.identityInfo.fullName}', style: TextStyle(color: HexColor('#74839C'), fontSize: 13)),
-                Text('Approved Amount: ${widget.data.approveAmount}', style: TextStyle(color: HexColor('#74839C'), fontSize: 13)),
+                Text('Order ID: ${widget.data.signRecordId}', style: TextStyle(color: Global.instance.textPrimaryColor, fontSize: 13)),
+                Text('Name: ${widget.data.identityInfo.fullName}', style: TextStyle(color: Global.instance.textPrimaryColor, fontSize: 13)),
+                Text('Approved Amount: ${widget.data.approveAmount}', style: TextStyle(color: Global.instance.textPrimaryColor, fontSize: 13)),
                 Row(
                   children: [
-                    Text('Phone Number: ${widget.data.clientTel}', style: TextStyle(color: HexColor('#74839C'), fontSize: 13)),
+                    Text('Phone Number: ${widget.data.clientTel}', style: TextStyle(color: Global.instance.textPrimaryColor, fontSize: 13)),
                     const SizedBox(width: 5),
                     InkWell(
                       onTap: () => widget.callUpAction(widget.data.clientTel),
@@ -93,9 +94,7 @@ class _AppointmentItemViewState extends State<AppointmentItemView> {
                 ),
                 Row(children: [
                   ElevatedButton(
-                    onPressed: () {
-                      if (widget.subscribeAction != null) widget.subscribeAction!(widget.data.signRecordId);
-                    },
+                    onPressed: () => widget.subscribeAction!(widget.data),
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Global.instance.themeColor,
                       padding: const EdgeInsets.symmetric(horizontal: 5),
@@ -124,7 +123,4 @@ class _AppointmentItemViewState extends State<AppointmentItemView> {
     );
   }
 
-  String _padZero(String text) {
-    return text.length == 1 ? '0' + text : text;
-  }
 }

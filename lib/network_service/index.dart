@@ -1,12 +1,13 @@
-import 'dart:convert';
-
+import 'package:flutter/widgets.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_nb_net/flutter_net.dart';
+import 'package:get/get.dart';
 import 'package:investigators/common/common_snack_bar.dart';
 import 'package:investigators/models/appointment_pending_list.dart';
 import 'package:investigators/models/base_response.dart';
 import 'package:investigators/models/interview_pending_list.dart';
 import 'package:investigators/models/returned_list.dart';
+import 'package:investigators/router/index.dart';
 import 'package:investigators/utils/field_null_or_empty.dart';
 import 'package:investigators/utils/global.dart';
 
@@ -81,6 +82,23 @@ class NetworkService {
     return response.data;
   }
 
+  // 预约面签
+  static Future<bool> bookReservation({required String appointId, required String time, required String address}) async {
+    BaseResponse response = await _post('/inv/appointment/booking', {
+      'sign_record_id': appointId,
+      'booking_time': time,
+      'booking_address': address,
+    });
+
+    return response.code == 1;
+  }
+
+  // 无法面签
+  static Future<bool> setUnable2Interview({required String signId, required String reason}) async {
+    BaseResponse response = await _post('/inv/appointment/cancel', {'sign_record_id': signId, 'cancel_reason': reason});
+    return response.code == 1;
+  }
+
   static Future<BaseResponse> _get<T>(String path, Map<String, dynamic> params, {bool isNeedLoading = true}) async {
     if (isNeedLoading) {
       EasyLoading.show(status: 'loading...', maskType: EasyLoadingMaskType.black);
@@ -94,6 +112,10 @@ class NetworkService {
       return BaseResponse(code: code, msg: error, tag: 'tag');
     });
     EasyLoading.dismiss();
+    if (result.code == 0 && RegExp('auth.token.').hasMatch(result.tag)) {
+      Global.instance.clearLoginInfo();
+      Get.offAllNamed(ApplicationRoutes.login);
+    }
     return result;
   }
 
@@ -118,6 +140,9 @@ class NetworkService {
       },
     );
     EasyLoading.dismiss();
+    if (result.code == 0 && RegExp('auth.token.').hasMatch(result.tag)) {
+      Get.offAllNamed(ApplicationRoutes.login);
+    }
     return result;
   }
 

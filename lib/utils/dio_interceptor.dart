@@ -1,5 +1,8 @@
+
 import 'package:dio/dio.dart';
 import 'package:investigators/utils/global.dart';
+import 'package:get/get.dart' as router;
+import 'package:investigators/router/index.dart';
 
 class DioInterceptor extends Interceptor {
   @override

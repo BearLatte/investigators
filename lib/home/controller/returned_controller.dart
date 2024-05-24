@@ -1,13 +1,16 @@
+import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 import 'package:investigators/models/returned_list.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
+import 'package:url_launcher/url_launcher_string.dart';
 
+import '../../common/common_snack_bar.dart';
 import '../../network_service/index.dart';
 
 class ReturnedController extends GetxController {
   int currentPage = 0;
   List<ReturnedListData> dataList = [];
-  RefreshController refreshController = RefreshController(initialRefresh: true);
+  RefreshController refreshController = RefreshController();
 
   @override
   void onInit() {
@@ -38,4 +41,19 @@ class ReturnedController extends GetxController {
     isRefresh ? dataList = model.data : dataList.addAll(model.data);
     update();
   }
+
+  void callUpAction(String phone) async {
+    final phoneNumber = 'tel:$phone';
+    if (await canLaunchUrlString(phoneNumber)) {
+    await launchUrlString(phoneNumber);
+    } else {
+    CommonSnackBar.showSnackBar('This device cannot be call up phone.');
+    }
+  }
+
+  void modifyAction(ReturnedListData data) {
+    debugPrint('DEBUG: 修改信息');
+  }
+
+
 }

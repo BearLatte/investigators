@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:encrypt/encrypt.dart';
+import 'package:flutter/animation.dart';
 import 'package:flutter_device_udid/flutter_device_udid.dart';
 import 'package:flutter_nb_net/flutter_net.dart';
 import 'package:investigators/utils/dio_interceptor.dart';
@@ -29,6 +30,9 @@ class Global {
 
   // 主题颜色
   Color themeColor = HexColor('#008CE2');
+
+  // 主要文字颜色
+  Color textPrimaryColor = HexColor('#74839C');
 
   // 安卓设备信息
   late AndroidDeviceInfo androidDeviceInfo;

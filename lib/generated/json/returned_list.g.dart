@@ -56,9 +56,9 @@ extension ReturnedListExtension on ReturnedList {
 
 ReturnedListData $ReturnedListDataFromJson(Map<String, dynamic> json) {
   final ReturnedListData returnedListData = ReturnedListData();
-  final String? id = jsonConvert.convert<String>(json['id']);
-  if (id != null) {
-    returnedListData.id = id;
+  final String? signRecordId = jsonConvert.convert<String>(json['sign_record_id']);
+  if (signRecordId != null) {
+    returnedListData.signRecordId = signRecordId;
   }
   final String? applyId = jsonConvert.convert<String>(json['apply_id']);
   if (applyId != null) {
@@ -101,7 +101,7 @@ ReturnedListData $ReturnedListDataFromJson(Map<String, dynamic> json) {
 
 Map<String, dynamic> $ReturnedListDataToJson(ReturnedListData entity) {
   final Map<String, dynamic> data = <String, dynamic>{};
-  data['id'] = entity.id;
+  data['sign_record_id'] = entity.signRecordId;
   data['apply_id'] = entity.applyId;
   data['client_id'] = entity.clientId;
   data['approve_ins_num'] = entity.approveInsNum;
@@ -116,7 +116,7 @@ Map<String, dynamic> $ReturnedListDataToJson(ReturnedListData entity) {
 
 extension ReturnedListDataExtension on ReturnedListData {
   ReturnedListData copyWith({
-    String? id,
+    String? signRecordId,
     String? applyId,
     String? clientId,
     String? approveInsNum,
@@ -128,7 +128,7 @@ extension ReturnedListDataExtension on ReturnedListData {
     ReturnedListDataIdentityInfo? identityInfo,
   }) {
     return ReturnedListData()
-      ..id = id ?? this.id
+      ..signRecordId = signRecordId ?? this.signRecordId
       ..applyId = applyId ?? this.applyId
       ..clientId = clientId ?? this.clientId
       ..approveInsNum = approveInsNum ?? this.approveInsNum

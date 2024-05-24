@@ -7,8 +7,18 @@ class BaseView extends StatelessWidget {
   final double appBarAdditionalHeight;
   final Widget? appBarBottomWidget;
   final Widget? leading;
+  final String? title;
+  final IconData? titleIcon;
 
-  const BaseView({super.key, required this.child, this.appBarAdditionalHeight = 0, this.appBarBottomWidget, this.leading});
+  const BaseView({
+    super.key,
+    required this.child,
+    this.appBarAdditionalHeight = 0,
+    this.appBarBottomWidget,
+    this.leading,
+    this.title,
+    this.titleIcon,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -20,9 +30,9 @@ class BaseView extends StatelessWidget {
         leading: leading,
         title: Row(
           children: [
-            Icon(Icons.account_circle_sharp, size: 40, color: HexColor('#87D0FF')),
+            Icon(titleIcon, size: 40, color: HexColor('#87D0FF')),
             const SizedBox(width: 10),
-            const Text('Ralph Laurence', style: TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold))
+            Text(title ?? '', style: const TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold))
           ],
         ),
         bottom: PreferredSize(preferredSize: Size.fromHeight(appBarAdditionalHeight), child: appBarBottomWidget ?? const SizedBox()),

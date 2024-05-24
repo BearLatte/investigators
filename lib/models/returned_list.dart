@@ -28,7 +28,8 @@ class ReturnedList {
 
 @JsonSerializable()
 class ReturnedListData {
-  late String id;
+  @JSONField(name: "sign_record_id")
+  late String signRecordId;
   @JSONField(name: "apply_id")
   late String applyId;
   @JSONField(name: "client_id")

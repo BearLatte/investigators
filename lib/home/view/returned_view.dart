@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:investigators/home/controller/returned_controller.dart';
+import 'package:investigators/home/view/returned_item_view.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 class ReturnedView extends StatelessWidget {
@@ -17,7 +18,16 @@ class ReturnedView extends StatelessWidget {
         header: const WaterDropHeader(),
         footer: const ClassicFooter(),
         enablePullUp: true,
-        child: ListView(),
+        child: ListView(
+            children: controller.dataList
+                .map(
+                  (item) => ReturnedItemView(
+                    data: item,
+                    modifyAction: controller.modifyAction,
+                    callUpAction: controller.callUpAction,
+                  ),
+                )
+                .toList()),
       ),
     );
   }

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:investigators/home/controller/interview_controller.dart';
+import 'package:investigators/home/view/interview_item_view.dart';
+import 'package:investigators/utils/method_util.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 class InterviewView extends StatelessWidget {
@@ -17,7 +19,22 @@ class InterviewView extends StatelessWidget {
         header: const WaterDropHeader(),
         footer: const ClassicFooter(),
         enablePullUp: true,
-        child: ListView(),
+        child: ListView(
+            padding: const EdgeInsets.symmetric(horizontal: 12),
+            children: controller.dataList
+                .map(
+                  (item) => InterviewItemView(
+                    data: item,
+                    modifyAction: controller.modifyAction,
+                    modifyAddressAction: controller.modifyAddress,
+                    interviewAction: controller.interviewAction,
+                    forbiddenAction: (id) => MethodUtil.showUnableInterviewDialog(id, reasonEditingController: controller.reasonEditingController, backAction: () {
+                      controller.reasonEditingController.clear();
+                      Get.back();
+                    }, confirmAction: controller.confirmUnable2Interview),
+                  ),
+                )
+                .toList()),
       ),
     );
   }

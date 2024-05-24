@@ -13,6 +13,7 @@ class ProfileView extends StatelessWidget {
     return GetBuilder<ProfileController>(
       init: Get.put(ProfileController()),
       builder: (controller) => BaseView(
+        titleIcon: Icons.account_circle_sharp,
         appBarAdditionalHeight: 120,
         appBarBottomWidget: SizedBox(
           height: 120,
