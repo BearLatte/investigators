@@ -68,7 +68,7 @@ class _AppointmentItemViewState extends State<AppointmentItemView> {
               decoration: BoxDecoration(border: Border(bottom: BorderSide(color: HexColor('#0370BA')))),
               child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
                 Text('Contact the Client', style: TextStyle(color: Global.instance.textPrimaryColor, fontSize: 13, fontWeight: FontWeight.bold)),
-                Text('$hours : $minutes : $seconds', style: TextStyle(color: HexColor('#FF3254'), fontSize: 13, fontWeight: FontWeight.bold))
+                Text(_remindTime > 0 ? '$hours : $minutes : $seconds' : 'Out Of Time', style: TextStyle(color: HexColor('#FF3254'), fontSize: 13, fontWeight: FontWeight.bold))
               ])),
           Container(
               alignment: Alignment.topLeft,

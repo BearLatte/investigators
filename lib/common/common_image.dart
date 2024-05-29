@@ -12,10 +12,10 @@ class CommonImage extends StatelessWidget {
   final String src;
   final double? width;
   final double? height;
-  final BoxFit? fit;
+  final BoxFit fit;
 
   const CommonImage(
-      {super.key, required this.src, this.width, this.height, this.fit});
+      {super.key, required this.src, this.width, this.height, this.fit = BoxFit.cover});
 
   @override
   Widget build(BuildContext context) {

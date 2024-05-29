@@ -4,7 +4,6 @@ import 'package:investigators/common/base_title_view.dart';
 import 'package:investigators/profile/controller/interview_history_list_controller.dart';
 import 'package:investigators/utils/global.dart';
 import 'package:investigators/utils/hex_color.dart';
-import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 class InterviewHistoryListView extends StatelessWidget {
   const InterviewHistoryListView({super.key});

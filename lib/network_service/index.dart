@@ -3,15 +3,18 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_nb_net/flutter_net.dart';
 import 'package:get/get.dart';
 import 'package:investigators/common/common_snack_bar.dart';
+import 'package:investigators/models/ali_oss_access_data.dart';
 import 'package:investigators/models/appointment_pending_list.dart';
 import 'package:investigators/models/base_response.dart';
+import 'package:investigators/models/interview_detail_info.dart';
 import 'package:investigators/models/interview_pending_list.dart';
 import 'package:investigators/models/returned_list.dart';
 import 'package:investigators/models/sign_history_model.dart';
+import 'package:investigators/models/subcategory.dart';
 import 'package:investigators/models/user_model.dart';
 import 'package:investigators/router/index.dart';
-import 'package:investigators/utils/field_null_or_empty.dart';
 import 'package:investigators/utils/global.dart';
+import 'package:investigators/utils/method_util.dart';
 
 class NetworkService {
   static Future<bool> isNeedEnterVerifyCode({required String phone, required String password}) async {
@@ -92,6 +95,10 @@ class NetworkService {
       'booking_address': address,
     });
 
+    if (response.code != 1) {
+      CommonSnackBar.showSnackBar(response.msg, type: SnackType.error);
+    }
+
     return response.code == 1;
   }
 
@@ -102,8 +109,12 @@ class NetworkService {
   }
 
   // 获取个人信息
-  static Future<UserModel> fetchUserInfo() async {
+  static Future<UserModel?> fetchUserInfo() async {
     BaseResponse response = await _get<UserModel>('/inv/my/info');
+    if (response.code == 0) {
+      CommonSnackBar.showSnackBar(response.msg, type: SnackType.error);
+      return null;
+    }
     return response.data;
   }
 
@@ -113,13 +124,44 @@ class NetworkService {
     return response.data;
   }
 
+  // 获取面签详情信息
+  static Future<InterviewDetailInfo?> fetchInterviewDetail({required String clientId, required String signRecordId}) async {
+    BaseResponse response = await _get<InterviewDetailInfo>('/inv/pending/getSignDetails', params: {'client_id': clientId, 'sign_record_id': signRecordId});
+    if (response.code == 0) {
+      CommonSnackBar.showSnackBar(response.msg, type: SnackType.error);
+      return null;
+    }
+    return response.data;
+  }
+
+  // 获取阿里云sta临时访问权限
+  static Future<AliOssAccessData?> fetchOSSAccessData() async {
+    BaseResponse response = await _get<AliOssAccessData>('/inv/ali/sts/getTemporarilyAccessData');
+    if (response.code != 1) {
+      CommonSnackBar.showSnackBar(response.msg, type: SnackType.error);
+      return null;
+    }
+
+    return response.data;
+  }
+
+  // 获取资产信息分类子集
+  static Future<List<Subcategory>?> getAssetSubcategory(String cateName) async {
+    BaseResponse response = await _get<List<Subcategory>>('/inv/category/getAssetInfoSubs', params: {'cate_name': cateName});
+    if (response.code == 0) {
+      CommonSnackBar.showSnackBar(response.msg, type: SnackType.error);
+      return null;
+    }
+
+    return response.data;
+  }
+
   static Future<BaseResponse> _get<T>(String path, {Map<String, dynamic>? params, bool isNeedLoading = true}) async {
     if (isNeedLoading) {
       EasyLoading.show(status: 'loading...', maskType: EasyLoadingMaskType.black);
     }
 
-    Map<String, dynamic> encryptedParams = await _encryptParametersValue(params);
-    var response = await get(path, queryParameters: encryptedParams);
+    var response = await get(path, queryParameters: params);
     var result = response.when(success: (data) {
       return BaseResponse<T>.fromJson(data);
     }, failure: (error, code) {
@@ -164,7 +206,7 @@ class NetworkService {
     params = params ?? {};
     Map<String, dynamic> encryptedParams = {};
     for (var key in params.keys) {
-      if (!isNullOrEmpty(params[key])) {
+      if (!MethodUtil.isNullOrEmpty(params[key])) {
         var result = await Global.instance.methodChannel.invokeMapMethod('cryptoAES', {'secretKey': Global.instance.deviceUUID, 'plainText': params[key]});
         if (result == null) {
           return {};

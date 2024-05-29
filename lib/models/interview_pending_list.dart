@@ -1,4 +1,5 @@
 import 'package:investigators/generated/json/base/json_field.dart';
+import 'package:investigators/models/address_model.dart';
 import 'dart:convert';
 
 import '../generated/json/interview_pending_list.g.dart';
@@ -47,7 +48,9 @@ class InterviewPendingListData {
 	@JSONField(name: "identity_info")
 	late InterviewPendingListDataIdentityInfo identityInfo;
 	@JSONField(name: "address_info")
-	late InterviewPendingListDataAddressInfo addressInfo;
+	late List<AddressModel> addressInfo;
+	@JSONField(name: 'booking_address')
+	late String bookingAddress;
 
 	InterviewPendingListData();
 
@@ -74,26 +77,6 @@ class InterviewPendingListDataIdentityInfo {
 	factory InterviewPendingListDataIdentityInfo.fromJson(Map<String, dynamic> json) => $InterviewPendingListDataIdentityInfoFromJson(json);
 
 	Map<String, dynamic> toJson() => $InterviewPendingListDataIdentityInfoToJson(this);
-
-	@override
-	String toString() {
-		return jsonEncode(this);
-	}
-}
-
-@JsonSerializable()
-class InterviewPendingListDataAddressInfo {
-	@JSONField(name: "full_address")
-	late String fullAddress;
-	late String type;
-	@JSONField(name: "client_id")
-	late String clientId;
-
-	InterviewPendingListDataAddressInfo();
-
-	factory InterviewPendingListDataAddressInfo.fromJson(Map<String, dynamic> json) => $InterviewPendingListDataAddressInfoFromJson(json);
-
-	Map<String, dynamic> toJson() => $InterviewPendingListDataAddressInfoToJson(this);
 
 	@override
 	String toString() {

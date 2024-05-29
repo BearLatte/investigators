@@ -23,7 +23,7 @@ class Application extends StatelessWidget {
       title: 'Investigators',
       debugShowCheckedModeBanner: false,
       initialRoute: Global.instance.isLogin ? ApplicationRoutes.tab : ApplicationRoutes.login,
-      defaultTransition: Transition.native,
+      defaultTransition: Transition.noTransition,
       getPages: ApplicationPages.routes,
       theme: ThemeData(
         brightness: Brightness.light,

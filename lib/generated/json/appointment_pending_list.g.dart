@@ -1,5 +1,7 @@
 import 'package:investigators/generated/json/base/json_convert_content.dart';
 import 'package:investigators/models/appointment_pending_list.dart';
+import 'package:investigators/models/address_model.dart';
+
 
 AppointmentPendingList $AppointmentPendingListFromJson(Map<String, dynamic> json) {
   final AppointmentPendingList appointmentPendingList = AppointmentPendingList();
@@ -88,8 +90,8 @@ AppointmentPendingListData $AppointmentPendingListDataFromJson(Map<String, dynam
   if (identityInfo != null) {
     appointmentPendingListData.identityInfo = identityInfo;
   }
-  final List<AppointmentPendingListDataAddressInfo>? addressInfo = (json['address_info'] as List<dynamic>?)?.map(
-          (e) => jsonConvert.convert<AppointmentPendingListDataAddressInfo>(e) as AppointmentPendingListDataAddressInfo).toList();
+  final List<AddressModel>? addressInfo = (json['address_info'] as List<dynamic>?)?.map(
+          (e) => jsonConvert.convert<AddressModel>(e) as AddressModel).toList();
   if (addressInfo != null) {
     appointmentPendingListData.addressInfo = addressInfo;
   }
@@ -120,7 +122,7 @@ extension AppointmentPendingListDataExtension on AppointmentPendingListData {
     String? remainTime,
     String? approveAmount,
     AppointmentPendingListDataIdentityInfo? identityInfo,
-    List<AppointmentPendingListDataAddressInfo>? addressInfo,
+    List<AddressModel>? addressInfo,
   }) {
     return AppointmentPendingListData()
       ..signRecordId = signRecordId ?? this.signRecordId
@@ -169,51 +171,6 @@ extension AppointmentPendingListDataIdentityInfoExtension on AppointmentPendingL
     return AppointmentPendingListDataIdentityInfo()
       ..gender = gender ?? this.gender
       ..fullName = fullName ?? this.fullName
-      ..clientId = clientId ?? this.clientId;
-  }
-}
-
-AppointmentPendingListDataAddressInfo $AppointmentPendingListDataAddressInfoFromJson(Map<String, dynamic> json) {
-  final AppointmentPendingListDataAddressInfo appointmentPendingListDataAddressInfo = AppointmentPendingListDataAddressInfo();
-  final String? addressId = jsonConvert.convert<String>(json['address_id']);
-  if (addressId != null) {
-    appointmentPendingListDataAddressInfo.addressId = addressId;
-  }
-  final String? fullAddress = jsonConvert.convert<String>(json['full_address']);
-  if (fullAddress != null) {
-    appointmentPendingListDataAddressInfo.fullAddress = fullAddress;
-  }
-  final String? type = jsonConvert.convert<String>(json['type']);
-  if (type != null) {
-    appointmentPendingListDataAddressInfo.type = type;
-  }
-  final String? clientId = jsonConvert.convert<String>(json['client_id']);
-  if (clientId != null) {
-    appointmentPendingListDataAddressInfo.clientId = clientId;
-  }
-  return appointmentPendingListDataAddressInfo;
-}
-
-Map<String, dynamic> $AppointmentPendingListDataAddressInfoToJson(AppointmentPendingListDataAddressInfo entity) {
-  final Map<String, dynamic> data = <String, dynamic>{};
-  data['address_id'] = entity.addressId;
-  data['full_address'] = entity.fullAddress;
-  data['type'] = entity.type;
-  data['client_id'] = entity.clientId;
-  return data;
-}
-
-extension AppointmentPendingListDataAddressInfoExtension on AppointmentPendingListDataAddressInfo {
-  AppointmentPendingListDataAddressInfo copyWith({
-    String? addressId,
-    String? fullAddress,
-    String? type,
-    String? clientId,
-  }) {
-    return AppointmentPendingListDataAddressInfo()
-      ..addressId = addressId ?? this.addressId
-      ..fullAddress = fullAddress ?? this.fullAddress
-      ..type = type ?? this.type
       ..clientId = clientId ?? this.clientId;
   }
 }

@@ -4,8 +4,10 @@ import 'package:flutter_datetime_picker_plus/flutter_datetime_picker_plus.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:investigators/common/common_snack_bar.dart';
+import 'package:investigators/models/address_model.dart';
 import 'package:investigators/models/appointment_pending_list.dart';
 import 'package:investigators/network_service/index.dart';
+import 'package:investigators/router/index.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
@@ -18,23 +20,11 @@ class AppointmentController extends GetxController {
   // 待预约列表
   List<AppointmentPendingListData> dataList = [];
 
-  // 日期输入控制器
-  TextEditingController dateEditingController = TextEditingController();
-
-  // 时间输入控制器
-  TextEditingController timeController = TextEditingController();
-
-  // 住宅输入控制器
-  TextEditingController residentialAddController = TextEditingController();
-
-  // 公司地址输入控制器
-  TextEditingController companyAddController = TextEditingController();
-
   // 拒绝原因输入控制器
   TextEditingController reasonEditingController = TextEditingController();
 
   // 当前选中的地址对象
-  AppointmentPendingListDataAddressInfo? selectedAddressInfo;
+  AddressModel? selectedAddressInfo;
 
   DateTime? selectedDate;
 
@@ -42,12 +32,6 @@ class AppointmentController extends GetxController {
   void onInit() {
     super.onInit();
     onRefresh(true);
-  }
-
-  @override
-  void onClose() {
-    print('从内存中删除了');
-    super.onClose();
   }
 
   void onRefresh(bool isRefresh) async {
@@ -82,59 +66,14 @@ class AppointmentController extends GetxController {
     }
   }
 
-  void forbiddenAction(String orderId) {
-    debugPrint('DEBUG: 设置无法面签');
-  }
-
-  void selectedAddressAction(AppointmentPendingListDataAddressInfo address) {
-    selectedAddressInfo = address;
-    update();
-  }
-
-  void confirmReservation(String appointId) async {
-    String date = dateEditingController.text.trim();
-    String time = timeController.text.trim();
-    if (date.isEmpty) {
-      return CommonSnackBar.showSnackBar('Please select reservation date!');
-    }
-    if (time.isEmpty) {
-      return CommonSnackBar.showSnackBar('Please select reservation time!');
-    }
-    if (selectedAddressInfo == null) {
-      return CommonSnackBar.showSnackBar('Please select reservation location!');
-    }
-
-    bool isSuccess = await NetworkService.bookReservation(appointId: appointId, time: time, address: selectedAddressInfo!.addressId);
+  void go2reservation(AppointmentPendingListData appointment) async {
+    var result = await Get.toNamed(ApplicationRoutes.reservation, arguments: {'addressList': appointment.addressInfo});
+    if (result == null) return;
+    bool isSuccess = await NetworkService.bookReservation(appointId: appointment.signRecordId, time: result['time'], address: result['address']);
     if (isSuccess) {
-      clearReservationInfoAndBack();
       onRefresh(true);
+      CommonSnackBar.showSnackBar('Make appointment successfully!', type: SnackType.success);
     }
-  }
-
-  void clearReservationInfoAndBack() {
-    dateEditingController.clear();
-    timeController.clear();
-    selectedAddressInfo = null;
-    selectedDate = null;
-    Get.back();
-  }
-
-  void confirmSelectDate() {
-    selectedDate ??= DateTime.now();
-    dateEditingController.text = DateFormat.yMMMMd().format(selectedDate!);
-    Get.back();
-  }
-
-  void selectDate(DateTime date) {
-    selectedDate = date;
-    update();
-  }
-
-  void showTimeSelector() async {
-    DateTime? time = await DatePicker.showTimePicker(Get.context!);
-    if (time == null) return;
-
-    timeController.text = DateFormat.Hms().format(time);
   }
 
   void confirmUnableInterviewAction(String itemId) async {

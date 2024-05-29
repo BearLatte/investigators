@@ -1,4 +1,5 @@
 import 'package:investigators/generated/json/base/json_field.dart';
+import 'package:investigators/models/address_model.dart';
 import 'dart:convert';
 
 import '../generated/json/appointment_pending_list.g.dart';
@@ -45,7 +46,7 @@ class AppointmentPendingListData {
 	@JSONField(name: "identity_info")
 	late AppointmentPendingListDataIdentityInfo identityInfo;
 	@JSONField(name: "address_info")
-	late List<AppointmentPendingListDataAddressInfo> addressInfo;
+	late List<AddressModel> addressInfo;
 
 	AppointmentPendingListData();
 
@@ -72,28 +73,6 @@ class AppointmentPendingListDataIdentityInfo {
 	factory AppointmentPendingListDataIdentityInfo.fromJson(Map<String, dynamic> json) => $AppointmentPendingListDataIdentityInfoFromJson(json);
 
 	Map<String, dynamic> toJson() => $AppointmentPendingListDataIdentityInfoToJson(this);
-
-	@override
-	String toString() {
-		return jsonEncode(this);
-	}
-}
-
-@JsonSerializable()
-class AppointmentPendingListDataAddressInfo {
-	@JSONField(name: "address_id")
-	late String addressId;
-	@JSONField(name: "full_address")
-	late String fullAddress;
-	late String type;
-	@JSONField(name: "client_id")
-	late String clientId;
-
-	AppointmentPendingListDataAddressInfo();
-
-	factory AppointmentPendingListDataAddressInfo.fromJson(Map<String, dynamic> json) => $AppointmentPendingListDataAddressInfoFromJson(json);
-
-	Map<String, dynamic> toJson() => $AppointmentPendingListDataAddressInfoToJson(this);
 
 	@override
 	String toString() {

@@ -26,12 +26,17 @@ class InterviewView extends StatelessWidget {
                   (item) => InterviewItemView(
                     data: item,
                     modifyAction: controller.modifyAction,
-                    modifyAddressAction: controller.modifyAddress,
                     interviewAction: controller.interviewAction,
-                    forbiddenAction: (id) => MethodUtil.showUnableInterviewDialog(id, reasonEditingController: controller.reasonEditingController, backAction: () {
-                      controller.reasonEditingController.clear();
-                      Get.back();
-                    }, confirmAction: controller.confirmUnable2Interview),
+                    forbiddenAction: (id) => MethodUtil.showUnableInterviewDialog(
+                      id,
+                      reasonEditingController: controller.reasonEditingController,
+                      backAction: () {
+                        controller.reasonEditingController.clear();
+                        Get.back();
+                      },
+                      confirmAction: controller.confirmUnable2Interview,
+                    ),
+                    callUpAction: controller.callUpAction,
                   ),
                 )
                 .toList()),

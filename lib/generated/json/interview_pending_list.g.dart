@@ -1,5 +1,7 @@
 import 'package:investigators/generated/json/base/json_convert_content.dart';
 import 'package:investigators/models/interview_pending_list.dart';
+import 'package:investigators/models/address_model.dart';
+
 
 InterviewPendingList $InterviewPendingListFromJson(Map<String, dynamic> json) {
   final InterviewPendingList interviewPendingList = InterviewPendingList();
@@ -92,9 +94,14 @@ InterviewPendingListData $InterviewPendingListDataFromJson(Map<String, dynamic> 
   if (identityInfo != null) {
     interviewPendingListData.identityInfo = identityInfo;
   }
-  final InterviewPendingListDataAddressInfo? addressInfo = jsonConvert.convert<InterviewPendingListDataAddressInfo>(json['address_info']);
+  final List<AddressModel>? addressInfo = (json['address_info'] as List<dynamic>?)?.map(
+          (e) => jsonConvert.convert<AddressModel>(e) as AddressModel).toList();
   if (addressInfo != null) {
     interviewPendingListData.addressInfo = addressInfo;
+  }
+  final String? bookingAddress = jsonConvert.convert<String>(json['booking_address']);
+  if (bookingAddress != null) {
+    interviewPendingListData.bookingAddress = bookingAddress;
   }
   return interviewPendingListData;
 }
@@ -110,7 +117,8 @@ Map<String, dynamic> $InterviewPendingListDataToJson(InterviewPendingListData en
   data['remain_time'] = entity.remainTime;
   data['approve_amount'] = entity.approveAmount;
   data['identity_info'] = entity.identityInfo.toJson();
-  data['address_info'] = entity.addressInfo.toJson();
+  data['address_info'] = entity.addressInfo.map((v) => v.toJson()).toList();
+  data['booking_address'] = entity.bookingAddress;
   return data;
 }
 
@@ -125,7 +133,8 @@ extension InterviewPendingListDataExtension on InterviewPendingListData {
     String? remainTime,
     String? approveAmount,
     InterviewPendingListDataIdentityInfo? identityInfo,
-    InterviewPendingListDataAddressInfo? addressInfo,
+    List<AddressModel>? addressInfo,
+    String? bookingAddress,
   }) {
     return InterviewPendingListData()
       ..signRecordId = signRecordId ?? this.signRecordId
@@ -137,7 +146,8 @@ extension InterviewPendingListDataExtension on InterviewPendingListData {
       ..remainTime = remainTime ?? this.remainTime
       ..approveAmount = approveAmount ?? this.approveAmount
       ..identityInfo = identityInfo ?? this.identityInfo
-      ..addressInfo = addressInfo ?? this.addressInfo;
+      ..addressInfo = addressInfo ?? this.addressInfo
+      ..bookingAddress = bookingAddress ?? this.bookingAddress;
   }
 }
 
@@ -175,44 +185,6 @@ extension InterviewPendingListDataIdentityInfoExtension on InterviewPendingListD
     return InterviewPendingListDataIdentityInfo()
       ..gender = gender ?? this.gender
       ..fullName = fullName ?? this.fullName
-      ..clientId = clientId ?? this.clientId;
-  }
-}
-
-InterviewPendingListDataAddressInfo $InterviewPendingListDataAddressInfoFromJson(Map<String, dynamic> json) {
-  final InterviewPendingListDataAddressInfo interviewPendingListDataAddressInfo = InterviewPendingListDataAddressInfo();
-  final String? fullAddress = jsonConvert.convert<String>(json['full_address']);
-  if (fullAddress != null) {
-    interviewPendingListDataAddressInfo.fullAddress = fullAddress;
-  }
-  final String? type = jsonConvert.convert<String>(json['type']);
-  if (type != null) {
-    interviewPendingListDataAddressInfo.type = type;
-  }
-  final String? clientId = jsonConvert.convert<String>(json['client_id']);
-  if (clientId != null) {
-    interviewPendingListDataAddressInfo.clientId = clientId;
-  }
-  return interviewPendingListDataAddressInfo;
-}
-
-Map<String, dynamic> $InterviewPendingListDataAddressInfoToJson(InterviewPendingListDataAddressInfo entity) {
-  final Map<String, dynamic> data = <String, dynamic>{};
-  data['full_address'] = entity.fullAddress;
-  data['type'] = entity.type;
-  data['client_id'] = entity.clientId;
-  return data;
-}
-
-extension InterviewPendingListDataAddressInfoExtension on InterviewPendingListDataAddressInfo {
-  InterviewPendingListDataAddressInfo copyWith({
-    String? fullAddress,
-    String? type,
-    String? clientId,
-  }) {
-    return InterviewPendingListDataAddressInfo()
-      ..fullAddress = fullAddress ?? this.fullAddress
-      ..type = type ?? this.type
       ..clientId = clientId ?? this.clientId;
   }
 }

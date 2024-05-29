@@ -69,6 +69,8 @@ class LoginController extends GetxController {
     Get.offAllNamed(ApplicationRoutes.tab);
   }
 
+
+
   Future<bool> _showVerifyCodeAlert() async {
     codeController.clear();
     return await Get.dialog(

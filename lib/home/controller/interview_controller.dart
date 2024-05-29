@@ -1,8 +1,11 @@
 import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
+import 'package:investigators/environment/main_com.dart';
 import 'package:investigators/models/interview_pending_list.dart';
 import 'package:investigators/network_service/index.dart';
+import 'package:investigators/router/index.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
+import 'package:url_launcher/url_launcher_string.dart';
 
 import '../../common/common_snack_bar.dart';
 
@@ -36,15 +39,39 @@ class InterviewController extends GetxController {
     update();
   }
 
-  void modifyAction(String itemId) {
-    debugPrint('DEBUG: 当前要修改时间的选项id为$itemId');
+  void modifyAction(InterviewPendingListData interview) async {
+    var result = await Get.toNamed(ApplicationRoutes.reservation, arguments: {
+      'selectedTime': interview.bookingTime,
+      'selectedAddId': interview.bookingAddress,
+      'addressList': interview.addressInfo,
+    });
+    if (result == null) return;
+    bool isSuccess = await NetworkService.bookReservation(appointId: interview.signRecordId, time: result['time'], address: result['address']);
+    if (isSuccess) {
+      onRefresh(true);
+      CommonSnackBar.showSnackBar('Appointment information has modified successfully!', type: SnackType.success);
+    }
   }
 
-  void modifyAddress(InterviewPendingListData data) {
-    debugPrint('DEBUG: 当前要修改的地址信息 ${data.signRecordId}');
+  void callUpAction(String phone) async {
+    final phoneNumber = 'tel:$phone';
+    if (await canLaunchUrlString(phoneNumber)) {
+      await launchUrlString(phoneNumber);
+    } else {
+      CommonSnackBar.showSnackBar('This device cannot be call up phone.');
+    }
   }
 
-  void interviewAction(InterviewPendingListData interview) {}
+  void interviewAction(InterviewPendingListData interview) async {
+    var result = await Get.toNamed(ApplicationRoutes.interviewDetail, arguments: {
+      'signRecordId': interview.signRecordId,
+      'clientId': interview.clientId,
+    });
+
+    if (result == 'error') {
+      CommonSnackBar.showSnackBar('Unknown error!');
+    }
+  }
 
   void confirmUnable2Interview(String itemId) async {
     String reason = reasonEditingController.text.trim();

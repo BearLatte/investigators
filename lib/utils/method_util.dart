@@ -1,10 +1,51 @@
+import 'package:easy_date_timeline/easy_date_timeline.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'global.dart';
 import 'hex_color.dart';
 
 class MethodUtil {
-  static void showUnableInterviewDialog(String dataId, {TextEditingController? reasonEditingController,required void Function() backAction, required void Function(String itemId) confirmAction}) {
+  static bool isNullOrEmpty(dynamic obj) {
+    if (obj == null) {
+      return true;
+    }
+
+    if (obj is String) {
+      return obj.isEmpty || obj == 'null';
+    }
+
+    if (obj is num) {
+      return false;
+    }
+
+    if (obj is int) {
+      return false;
+    }
+
+    if (obj is DateTime) {
+      return false;
+    }
+
+    if (obj is Map) {
+      return obj.isEmpty;
+    }
+
+    if (obj is List) {
+      return obj.isEmpty;
+    }
+
+    return false;
+  }
+
+  /*
+  * 无法预约功能弹窗
+  * */
+  static void showUnableInterviewDialog(
+    String dataId, {
+    TextEditingController? reasonEditingController,
+    required void Function() backAction,
+    required void Function(String itemId) confirmAction,
+  }) {
     Get.dialog(
         barrierDismissible: false,
         Column(
@@ -57,5 +98,4 @@ class MethodUtil {
           ],
         ));
   }
-
 }
