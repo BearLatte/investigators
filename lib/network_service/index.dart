@@ -3,8 +3,10 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_nb_net/flutter_net.dart';
 import 'package:get/get.dart';
 import 'package:investigators/common/common_snack_bar.dart';
+import 'package:investigators/models/address_list_item.dart';
 import 'package:investigators/models/ali_oss_access_data.dart';
 import 'package:investigators/models/appointment_pending_list.dart';
+import 'package:investigators/models/asset_options.dart';
 import 'package:investigators/models/base_response.dart';
 import 'package:investigators/models/interview_detail_info.dart';
 import 'package:investigators/models/interview_pending_list.dart';
@@ -146,8 +148,18 @@ class NetworkService {
   }
 
   // 获取资产信息分类子集
-  static Future<List<Subcategory>?> getAssetSubcategory(String cateName) async {
-    BaseResponse response = await _get<List<Subcategory>>('/inv/category/getAssetInfoSubs', params: {'cate_name': cateName});
+  static Future<AssetOptions?> getAssetSubcategory() async {
+    BaseResponse response = await _get<AssetOptions>('/inv/category/getAssetInfoSubs');
+    if (response.code == 0) {
+      CommonSnackBar.showSnackBar(response.msg, type: SnackType.error);
+      return null;
+    }
+
+    return response.data;
+  }
+
+  static Future<List<AddressListItem>?> fetchAddress(String type, {String? parentCode}) async {
+    BaseResponse response = await _get<List<AddressListItem>>('/inv/address/getAddrListByType', params: {'type': type, 'parent_code': parentCode});
     if (response.code == 0) {
       CommonSnackBar.showSnackBar(response.msg, type: SnackType.error);
       return null;

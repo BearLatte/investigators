@@ -1,13 +1,17 @@
+import 'dart:collection';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
-import 'package:group_radio_button/group_radio_button.dart';
 import 'package:investigators/common/base_title_view.dart';
-import 'package:investigators/common/common_image.dart';
 import 'package:investigators/home/controller/interview_detail_controller.dart';
 import 'package:investigators/utils/global.dart';
 import 'package:investigators/utils/hex_color.dart';
+
+import '../../models/interview_detail_info.dart';
 
 class InterviewDetailView extends StatelessWidget {
   const InterviewDetailView({super.key});
@@ -110,7 +114,7 @@ class InterviewDetailView extends StatelessWidget {
             _sectionHeader('Salary category'),
             _subSection('Monthly Income'),
             _dropdownField(controller.salaryController, hintText: 'Please select your salary!', node: controller.salaryNode, onTap: controller.go2selectSalary),
-            if (controller.salaryController.text.trim().isNotEmpty && controller.salaryController.text != 'None')
+            if (controller.salaryController.text.trim().isNotEmpty && controller.salaryController.text != 'None' && controller.salaryController.text != 'Nothing')
               _photoUploadItem(
                 controller.salaryPhotos,
                 addAction: () => controller.addPhotoAction(PhotoUploadType.salary),
@@ -118,7 +122,7 @@ class InterviewDetailView extends StatelessWidget {
               ),
             _subSection('Money Flows(nearly 1 month)'),
             _dropdownField(controller.moneyFlowController, hintText: 'Please select your money flow!', node: controller.moneyFlowNode, onTap: controller.go2selectMoneyFlow),
-            if (controller.moneyFlowController.text.trim().isNotEmpty && controller.moneyFlowController.text != 'None')
+            if (controller.moneyFlowController.text.trim().isNotEmpty && controller.moneyFlowController.text != 'None' && controller.moneyFlowController.text != 'Nothing')
               _photoUploadItem(
                 controller.moneyFlowPhotos,
                 addAction: () => controller.addPhotoAction(PhotoUploadType.moneyFlows),
@@ -131,18 +135,20 @@ class InterviewDetailView extends StatelessWidget {
               node: controller.investmentNode,
               onTap: controller.go2investmentCertificate,
             ),
-            if (controller.investmentController.text.trim().isNotEmpty && controller.investmentController.text != 'None') _subSection('Voucher Validity'),
-            if (controller.investmentController.text.trim().isNotEmpty && controller.investmentController.text != 'None')
+            if (controller.investmentController.text.trim().isNotEmpty && controller.investmentController.text != 'None' && controller.investmentController.text != 'Nothing')
+              _subSection('Voucher Validity'),
+            if (controller.investmentController.text.trim().isNotEmpty && controller.investmentController.text != 'None' && controller.investmentController.text != 'Noting')
               _dropdownField(
                 hintText: 'Please select Voucher Validity!',
                 controller.investmentDateOfDeadlineController,
-                onTap: controller.go2selectInvestmentDateOfDeadline,
+                onTap: () => controller.go2selectDate(SelectionDateType.voucherValidity),
                 node: controller.investmentDateOfDeadlineNode,
               ),
-            if (controller.investmentController.text.trim().isNotEmpty && controller.investmentController.text != 'None') _subSection('Voucher Amount'),
-            if (controller.investmentController.text.trim().isNotEmpty && controller.investmentController.text != 'None')
+            if (controller.investmentController.text.trim().isNotEmpty && controller.investmentController.text != 'None' && controller.investmentController.text != 'Nothing')
+              _subSection('Voucher Amount'),
+            if (controller.investmentController.text.trim().isNotEmpty && controller.investmentController.text != 'None' && controller.investmentController.text != 'Nothing')
               _itemTextField(controller.investmentAmountController, isEnable: true),
-            if (controller.investmentController.text.trim().isNotEmpty && controller.investmentController.text != 'None')
+            if (controller.investmentController.text.trim().isNotEmpty && controller.investmentController.text != 'None' && controller.investmentController.text != 'Nothing')
               _photoUploadItem(
                 controller.investmentPhotos,
                 addAction: () => controller.addPhotoAction(PhotoUploadType.invest),
@@ -150,7 +156,7 @@ class InterviewDetailView extends StatelessWidget {
               ),
             _subSection('Incumbency Certification'),
             Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-              Text('Badge', style: TextStyle(color: Global.instance.textPrimaryColor, fontSize: 13)),
+              Text('Badge', style: TextStyle(color: Global.instance.textPrimaryColor, fontSize: 15, fontWeight: FontWeight.bold)),
               Row(children: [
                 _radioItem('Yes', onTap: () => controller.badgeStatusChanged(true), isChecked: controller.isBadge == true),
                 _radioItem('No', onTap: () => controller.badgeStatusChanged(false), isChecked: controller.isBadge == false),
@@ -161,7 +167,7 @@ class InterviewDetailView extends StatelessWidget {
             _sectionHeader('Asset Class'),
             _subSection('Land'),
             Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-              Text('Fertile farmland / Wooded area', style: TextStyle(color: Global.instance.textPrimaryColor, fontSize: 13)),
+              Text('Fertile farmland / Wooded area', style: TextStyle(color: Global.instance.textPrimaryColor, fontSize: 15, fontWeight: FontWeight.bold)),
               Row(children: [
                 _radioItem('Hold', onTap: () => controller.landHoldStatusChanged(true), isChecked: controller.isHoldLand == true),
                 _radioItem('Nothold', onTap: () => controller.landHoldStatusChanged(false), isChecked: controller.isHoldLand == false),
@@ -169,6 +175,8 @@ class InterviewDetailView extends StatelessWidget {
             ]),
             if (controller.isHoldLand == true)
               _assetItem(
+                locationOnTap: () => controller.go2selectLocation(LocationOnTapType.land),
+                locationNode: controller.landLocationNode,
                 locationController: controller.landLocationController,
                 fullAddressController: controller.landFullAddressController,
                 estimatedAreaController: controller.landEstimatedController,
@@ -179,7 +187,7 @@ class InterviewDetailView extends StatelessWidget {
               ),
             const SizedBox(height: 10),
             Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-              Text('Housing', style: TextStyle(color: Global.instance.textPrimaryColor, fontSize: 13)),
+              Text('Housing', style: TextStyle(color: Global.instance.textPrimaryColor, fontSize: 15, fontWeight: FontWeight.bold)),
               Row(children: [
                 _radioItem('Hold', onTap: () => controller.hosingStatusChanged(true), isChecked: controller.isHosing == true),
                 _radioItem('Nothold', onTap: () => controller.hosingStatusChanged(false), isChecked: controller.isHosing == false),
@@ -187,6 +195,8 @@ class InterviewDetailView extends StatelessWidget {
             ]),
             if (controller.isHosing == true)
               _assetItem(
+                locationOnTap: () => controller.go2selectLocation(LocationOnTapType.house),
+                locationNode: controller.houseLocationNode,
                 locationController: controller.houseLocationController,
                 fullAddressController: controller.houseFullAddressController,
                 timeOfPurchaseController: controller.housePurchaseTimeController,
@@ -195,10 +205,12 @@ class InterviewDetailView extends StatelessWidget {
                 photos: controller.housePhotos,
                 photoAddAction: () => controller.addPhotoAction(PhotoUploadType.residential),
                 photoItemOnTap: (index) => controller.photoItemOnTap(index, type: PhotoUploadType.residential),
+                purchaseTimeOnTap: () => controller.go2selectDate(SelectionDateType.house),
+                purchaseTimeNode: controller.housePurchaseTimeNode,
               ),
             const SizedBox(height: 10),
             Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-              Text('Business', style: TextStyle(color: Global.instance.textPrimaryColor, fontSize: 13)),
+              Text('Business', style: TextStyle(color: Global.instance.textPrimaryColor, fontSize: 15, fontWeight: FontWeight.bold)),
               Row(children: [
                 _radioItem('Hold', onTap: () => controller.businessStatusChanged(true), isChecked: controller.isBusiness == true),
                 _radioItem('Nothold', onTap: () => controller.businessStatusChanged(false), isChecked: controller.isBusiness == false),
@@ -206,6 +218,8 @@ class InterviewDetailView extends StatelessWidget {
             ]),
             if (controller.isBusiness == true)
               _assetItem(
+                locationOnTap: () => controller.go2selectLocation(LocationOnTapType.business),
+                locationNode: controller.businessLocationNode,
                 locationController: controller.businessLocationController,
                 fullAddressController: controller.businessFullAddressController,
                 timeOfPurchaseController: controller.businessPurchaseTimeController,
@@ -214,7 +228,113 @@ class InterviewDetailView extends StatelessWidget {
                 photos: controller.businessPhotos,
                 photoAddAction: () => controller.addPhotoAction(PhotoUploadType.business),
                 photoItemOnTap: (index) => controller.photoItemOnTap(index, type: PhotoUploadType.business),
+                purchaseTimeOnTap: () => controller.go2selectDate(SelectionDateType.business),
+                purchaseTimeNode: controller.businessPurchaseTimeNode,
               ),
+            const SizedBox(height: 20),
+            _sectionHeader('Livestock Assets'),
+            const SizedBox(height: 10),
+            _dropdownField(
+              controller.livestockController,
+              onTap: controller.go2selectLivestock,
+              node: controller.livestockNode,
+              hintText: 'Please select the livestock you had!',
+            ),
+            if (controller.livestockController.text.trim().isNotEmpty && (controller.livestockController.text != 'None' && controller.livestockController.text != 'Nothing'))
+              _livestockDetail(
+                amountController: controller.livestockAmountController,
+                priceController: controller.livestockUnitPriceController,
+                totalValueController: controller.livestockTotalValueController,
+                photos: controller.livestockPhotos,
+                addAction: () => controller.addPhotoAction(PhotoUploadType.livestock),
+                photoItemOnTap: (index) => controller.photoItemOnTap(index, type: PhotoUploadType.livestock),
+              ),
+            const SizedBox(height: 20),
+            _sectionHeader('Vehicle'),
+            const SizedBox(height: 10),
+            _dropdownField(
+              controller.vehicleController,
+              onTap: controller.go2selectVehicle,
+              node: controller.vehicleNode,
+              hintText: 'Please select vehicle you had!',
+            ),
+            if (controller.vehicleController.text.trim().isNotEmpty && controller.vehicleController.text != 'None' && controller.vehicleController.text != 'Nothing')
+              _vehicleDetail(
+                purchasePriceController: controller.vehiclePurchasePriceController,
+                purchaseDateController: controller.vehiclePurchaseDateController,
+                marketValueController: controller.vehicleMarketValueController,
+                photos: controller.vehiclePhotos,
+                addAction: () => controller.addPhotoAction(PhotoUploadType.motorVehicles),
+                itemOnTap: (index) => controller.photoItemOnTap(index, type: PhotoUploadType.motorVehicles),
+                node: controller.vehiclePurchaseDateNode,
+                dateSelectOnTap: () => controller.go2selectDate(SelectionDateType.vehicle),
+              ),
+            const SizedBox(height: 20),
+            _sectionHeader('Shared class'),
+            const SizedBox(height: 10),
+            _subSection('Other Supporting Materials'),
+            _itemTextField(controller.otherSupportingController, isEnable: true),
+            _photoUploadItem(
+              controller.otherAssetPhotos,
+              addAction: () => controller.addPhotoAction(PhotoUploadType.other),
+              itemOnTap: (index) => controller.photoItemOnTap(index, type: PhotoUploadType.other),
+            ),
+            const SizedBox(height: 20),
+            _sectionHeader('Account Payee'),
+            ...List.generate(controller.accountList.length, (index) => _accountItem(controller.accountList[index])),
+            const SizedBox(height: 20),
+            InkWell(
+                onTap: controller.refuseLoanStatusChanged,
+                child: Row(children: [
+                  Icon(
+                    controller.isRefuseLoan ? Icons.check_box_outlined : Icons.check_box_outline_blank_sharp,
+                    color: controller.isRefuseLoan ? Global.instance.themeColor : Global.instance.textPrimaryColor,
+                    size: 25,
+                  ),
+                  Text(
+                    'Recommended to refuse loan',
+                    style: TextStyle(color: controller.isRefuseLoan ? Global.instance.themeColor : Global.instance.textPrimaryColor, fontSize: 15, fontWeight: FontWeight.bold),
+                  )
+                ])),
+            const SizedBox(height: 10),
+            _itemTextField(controller.refuseLoanReasonController, isEnable: controller.isRefuseLoan, isMultiLine: true, maxLines: 5),
+            Container(
+              padding: const EdgeInsets.symmetric(vertical: 40),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Expanded(
+                    child: InkWell(
+                      onTap: controller.interviewAction,
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(vertical: 10),
+                        alignment: Alignment.center,
+                        decoration: BoxDecoration(color: Global.instance.themeColor, borderRadius: BorderRadius.circular(8)),
+                        child: const Text(
+                          'Interview',
+                          style: TextStyle(color: Colors.white, fontSize: 15, fontWeight: FontWeight.bold),
+                        ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 20),
+                  Expanded(
+                    child: InkWell(
+                      onTap: controller.reconsiderationAction,
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(vertical: 10),
+                        alignment: Alignment.center,
+                        decoration: BoxDecoration(color: Global.instance.themeColor, borderRadius: BorderRadius.circular(8)),
+                        child: const Text(
+                          'Reconsideration',
+                          style: TextStyle(color: Colors.white, fontSize: 15, fontWeight: FontWeight.bold),
+                        ),
+                      ),
+                    ),
+                  )
+                ],
+              ),
+            )
           ],
         ),
       ),
@@ -329,12 +449,12 @@ class InterviewDetailView extends StatelessWidget {
     return Text(text, style: TextStyle(color: Global.instance.textPrimaryColor, fontSize: 13));
   }
 
-  Widget _itemTextField(TextEditingController controller, {bool isEnable = false, bool isMultiLine = false}) {
+  Widget _itemTextField(TextEditingController controller, {bool isEnable = false, bool isMultiLine = false, int? maxLines}) {
     return TextField(
       controller: controller,
       style: TextStyle(color: Global.instance.textPrimaryColor, fontSize: 13),
       enabled: isEnable,
-      maxLines: isMultiLine ? null : 1,
+      maxLines: isMultiLine ? maxLines : 1,
       decoration: InputDecoration(
         isCollapsed: true,
         hintText: 'Please fill in',
@@ -437,21 +557,89 @@ class InterviewDetailView extends StatelessWidget {
     required List<String> photos,
     required void Function() photoAddAction,
     void Function(int index)? photoItemOnTap,
+    void Function()? purchaseTimeOnTap,
+    FocusNode? purchaseTimeNode,
+    FocusNode? locationNode,
   }) {
     return Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
       _subSection('Geographical Location'),
-      _dropdownField(locationController, onTap: locationOnTap, hintText: 'Please select your land asset location!'),
+      _dropdownField(locationController, onTap: locationOnTap, hintText: 'Please select your land asset location!', node: locationNode),
       _subSection('Full Address'),
       _itemTextField(fullAddressController, isEnable: true),
       if (estimatedAreaController != null) _subSection('Estimated Area'),
-      if (estimatedAreaController != null) _itemTextField(estimatedAreaController!, isEnable: true),
+      if (estimatedAreaController != null) _itemTextField(estimatedAreaController, isEnable: true),
       if (timeOfPurchaseController != null) _subSection('Purchase Time'),
-      if (timeOfPurchaseController != null) _dropdownField(timeOfPurchaseController!, hintText: 'Please select your house purchase time!'),
+      if (timeOfPurchaseController != null)
+        _dropdownField(
+          timeOfPurchaseController,
+          hintText: 'Please select your house purchase time!',
+          onTap: purchaseTimeOnTap,
+          node: purchaseTimeNode,
+        ),
       if (priceController != null) _subSection('Purchase Price'),
-      if (priceController != null) _itemTextField(priceController!, isEnable: true),
+      if (priceController != null) _itemTextField(priceController, isEnable: true),
       _subSection('Market Value'),
       _itemTextField(marketValueController, isEnable: true),
       _photoUploadItem(photos, addAction: photoAddAction, itemOnTap: photoItemOnTap)
     ]);
+  }
+
+  Widget _livestockDetail(
+      {required TextEditingController amountController,
+      required TextEditingController priceController,
+      required TextEditingController totalValueController,
+      required List<String> photos,
+      void Function(int index)? photoItemOnTap,
+      void Function()? addAction}) {
+    return Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+      _subSection('Amount'),
+      _itemTextField(amountController, isEnable: true),
+      _subSection('Estimated Unit Price'),
+      _itemTextField(priceController, isEnable: true),
+      _subSection('Estimated Unit Price'),
+      _itemTextField(priceController, isEnable: true),
+      _subSection('Total Market Value'),
+      _itemTextField(totalValueController, isEnable: true),
+      _photoUploadItem(photos, itemOnTap: photoItemOnTap, addAction: addAction),
+    ]);
+  }
+
+  Widget _vehicleDetail({
+    required TextEditingController purchasePriceController,
+    required TextEditingController purchaseDateController,
+    required TextEditingController marketValueController,
+    void Function()? dateSelectOnTap,
+    FocusNode? node,
+    required List<String> photos,
+    void Function()? addAction,
+    void Function(int index)? itemOnTap,
+  }) {
+    return Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+      _subSection('Purchase Price'),
+      _itemTextField(purchasePriceController, isEnable: true),
+      _subSection('Purchase Date'),
+      _dropdownField(purchaseDateController, hintText: "Please select your vehicle's purchase date!", onTap: dateSelectOnTap, node: node),
+      _subSection('Market Value'),
+      _itemTextField(marketValueController, isEnable: true),
+      _photoUploadItem(photos, addAction: addAction, itemOnTap: itemOnTap)
+    ]);
+  }
+
+  Widget _accountItem(InterviewDetailInfoInterviewInfoAccount account) {
+    return Container(
+      margin: const EdgeInsets.only(top: 5),
+      padding: const EdgeInsets.only(right: 10),
+      decoration: BoxDecoration(color: HexColor('#F1FAFF'), borderRadius: BorderRadius.circular(8), border: Border.all(color: HexColor('#8290A7'))),
+      child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+        Container(
+          width: 65,
+          padding: const EdgeInsets.symmetric(vertical: 10),
+          alignment: Alignment.center,
+          decoration: BoxDecoration(color: Global.instance.themeColor, borderRadius: BorderRadius.circular(5)),
+          child: Text(account.channelName, style: const TextStyle(color: Colors.white, fontSize: 15, fontWeight: FontWeight.bold)),
+        ),
+        Text(account.accountNo, style: TextStyle(color: Global.instance.themeColor, fontSize: 15, fontWeight: FontWeight.bold))
+      ]),
+    );
   }
 }

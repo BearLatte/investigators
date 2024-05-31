@@ -27,7 +27,7 @@ class InterviewDetailInfoInterviewInfo {
 	late String name;
 	late List<InterviewDetailInfoInterviewInfoAddress> address;
 	late InterviewDetailInfoInterviewInfoAsset asset;
-	late List<InterviewDetailInfoInterviewInfoAccount> account;
+	List<InterviewDetailInfoInterviewInfoAccount>? account;
 
 	InterviewDetailInfoInterviewInfo();
 
@@ -68,25 +68,25 @@ class InterviewDetailInfoInterviewInfoAddress {
 @JsonSerializable()
 class InterviewDetailInfoInterviewInfoAsset {
 	@JSONField(name: "monthly_income")
-	late InterviewDetailInfoInterviewInfoAssetMonthlyIncome monthlyIncome;
+	 InterviewDetailInfoInterviewInfoAssetMonthlyIncome? monthlyIncome;
 	@JSONField(name: "last_month_transaction_flow")
-	late InterviewDetailInfoInterviewInfoAssetLastMonthTransactionFlow lastMonthTransactionFlow;
+	InterviewDetailInfoInterviewInfoAssetLastMonthTransactionFlow? lastMonthTransactionFlow;
 	@JSONField(name: "investment_certificate")
-	late InterviewDetailInfoInterviewInfoAssetInvestmentCertificate investmentCertificate;
+	InterviewDetailInfoInterviewInfoAssetInvestmentCertificate? investmentCertificate;
 	@JSONField(name: "proof_of_employment")
-	late InterviewDetailInfoInterviewInfoAssetProofOfEmployment proofOfEmployment;
+	InterviewDetailInfoInterviewInfoAssetProofOfEmployment? proofOfEmployment;
 	@JSONField(name: "other_assets")
-	late InterviewDetailInfoInterviewInfoAssetOtherAssets otherAssets;
+	InterviewDetailInfoInterviewInfoAssetOtherAssets? otherAssets;
 	@JSONField(name: "land_ownership")
-	late InterviewDetailInfoInterviewInfoAssetLandOwnership landOwnership;
+	InterviewDetailInfoInterviewInfoAssetLandOwnership? landOwnership;
 	@JSONField(name: "house_ownership")
-	late InterviewDetailInfoInterviewInfoAssetHouseOwnership houseOwnership;
+	InterviewDetailInfoInterviewInfoAssetHouseOwnership? houseOwnership;
 	@JSONField(name: "shop_assets")
-	late InterviewDetailInfoInterviewInfoAssetShopAssets shopAssets;
+	InterviewDetailInfoInterviewInfoAssetShopAssets? shopAssets;
 	@JSONField(name: "livestock_assets")
-	late InterviewDetailInfoInterviewInfoAssetLivestockAssets livestockAssets;
+	InterviewDetailInfoInterviewInfoAssetLivestockAssets? livestockAssets;
 	@JSONField(name: "motor_vehicles")
-	late InterviewDetailInfoInterviewInfoAssetMotorVehicles motorVehicles;
+	InterviewDetailInfoInterviewInfoAssetMotorVehicles? motorVehicles;
 
 	InterviewDetailInfoInterviewInfoAsset();
 

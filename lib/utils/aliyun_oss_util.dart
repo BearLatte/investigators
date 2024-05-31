@@ -17,42 +17,37 @@ class AliyunOssUtil {
     return _instance!;
   }
 
-  AliOssAccessData? accessData;
-
   Future<String?> uploadImage(String filePath) async {
-    if (accessData == null) {
-      AliOssAccessData? data = await _fetchAccessData();
-      if (data == null) {
-        return null;
-      }
-      accessData = data;
+    AliOssAccessData? data = await _fetchAccessData();
+    if (data == null) {
+      return null;
     }
 
-    EasyLoading.show(status: 'uploading...', maskType: EasyLoadingMaskType.black);
     Client client = Client.init(
       ossEndpoint: 'oss-ap-southeast-6.aliyuncs.com',
-      bucketName: accessData!.bucket,
-      stsUrl: accessData!.ossUrlPrefix,
+      bucketName: data.bucket,
+      stsUrl: data.ossUrlPrefix,
       dio: Dio(BaseOptions(connectTimeout: const Duration(milliseconds: 9000))),
       authGetter: () => Auth(
-        accessKey: accessData!.accessKeyId,
-        accessSecret: accessData!.accessKeySecret,
-        secureToken: accessData!.securityToken,
-        expire: accessData!.expiration,
+        accessKey: data.accessKeyId,
+        accessSecret: data.accessKeySecret,
+        secureToken: data.securityToken,
+        expire: data.expiration,
       ),
     );
 
+    EasyLoading.show(status: 'uploading...', maskType: EasyLoadingMaskType.black);
     // 从文件中读取
     final fileData = (await File(filePath).readAsBytes());
-    String fileName = '${RandomUtil.generateRandomString(64)}.jpg';
-    final result = await client.putObject(fileData, fileName);
+    String fileName = 'sign_${DateTime.now().millisecondsSinceEpoch ~/ 1000}_${RandomUtil.generateRandomNumber(5)}.png';
+    final result = await client!.putObject(fileData, fileName);
     if (result.statusCode != 200) {
       EasyLoading.dismiss();
       CommonSnackBar.showSnackBar(result.statusMessage, type: SnackType.error);
       return null;
     }
     EasyLoading.dismiss();
-    return '${accessData!.ossUrlPrefix}/$fileName';
+    return '${data.ossUrlPrefix}/$fileName';
   }
 
   Future<AliOssAccessData?> _fetchAccessData() async {

@@ -60,7 +60,7 @@ Map<String, dynamic> $InterviewDetailInfoInterviewInfoToJson(InterviewDetailInfo
   data['name'] = entity.name;
   data['address'] = entity.address.map((v) => v.toJson()).toList();
   data['asset'] = entity.asset.toJson();
-  data['account'] = entity.account.map((v) => v.toJson()).toList();
+  data['account'] = entity.account?.map((v) => v.toJson()).toList();
   return data;
 }
 
@@ -181,16 +181,16 @@ InterviewDetailInfoInterviewInfoAsset $InterviewDetailInfoInterviewInfoAssetFrom
 
 Map<String, dynamic> $InterviewDetailInfoInterviewInfoAssetToJson(InterviewDetailInfoInterviewInfoAsset entity) {
   final Map<String, dynamic> data = <String, dynamic>{};
-  data['monthly_income'] = entity.monthlyIncome.toJson();
-  data['last_month_transaction_flow'] = entity.lastMonthTransactionFlow.toJson();
-  data['investment_certificate'] = entity.investmentCertificate.toJson();
-  data['proof_of_employment'] = entity.proofOfEmployment.toJson();
-  data['other_assets'] = entity.otherAssets.toJson();
-  data['land_ownership'] = entity.landOwnership.toJson();
-  data['house_ownership'] = entity.houseOwnership.toJson();
-  data['shop_assets'] = entity.shopAssets.toJson();
-  data['livestock_assets'] = entity.livestockAssets.toJson();
-  data['motor_vehicles'] = entity.motorVehicles.toJson();
+  data['monthly_income'] = entity.monthlyIncome?.toJson();
+  data['last_month_transaction_flow'] = entity.lastMonthTransactionFlow?.toJson();
+  data['investment_certificate'] = entity.investmentCertificate?.toJson();
+  data['proof_of_employment'] = entity.proofOfEmployment?.toJson();
+  data['other_assets'] = entity.otherAssets?.toJson();
+  data['land_ownership'] = entity.landOwnership?.toJson();
+  data['house_ownership'] = entity.houseOwnership?.toJson();
+  data['shop_assets'] = entity.shopAssets?.toJson();
+  data['livestock_assets'] = entity.livestockAssets?.toJson();
+  data['motor_vehicles'] = entity.motorVehicles?.toJson();
   return data;
 }
 

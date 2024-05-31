@@ -1,7 +1,10 @@
 import 'package:get/get.dart';
 import 'package:investigators/home/view/camera_take_view.dart';
+import 'package:investigators/home/view/city_selection_view.dart';
+import 'package:investigators/home/view/district_selection_view.dart';
 import 'package:investigators/home/view/home_view.dart';
 import 'package:investigators/home/view/interview_detail_view.dart';
+import 'package:investigators/home/view/province_selection_view.dart';
 import 'package:investigators/home/view/reservation_modal_view.dart';
 import 'package:investigators/home/view/tab_bar.dart';
 import 'package:investigators/login/view/login_view.dart';
@@ -14,8 +17,11 @@ abstract class ApplicationRoutes {
   static const profile = '/profile';
   static const history = '/history';
   static const reservation = '/reservation';
-  static const interviewDetail = '/interviewDetial';
+  static const interviewDetail = '/interviewDetail';
   static const takePhoto = '/takePhoto';
+  static const province = '/province';
+  static const city = '/city';
+  static const district = '/district';
 }
 
 class ApplicationPages {
@@ -51,6 +57,21 @@ class ApplicationPages {
       transition: Transition.native,
       name: ApplicationRoutes.takePhoto,
       page: () => const CameraTakeView(),
+    ),
+    GetPage(
+      transition: Transition.native,
+      name: ApplicationRoutes.province,
+      page: () => const ProvinceSelectionView(),
+    ),
+    GetPage(
+      transition: Transition.native,
+      name: ApplicationRoutes.city,
+      page: () => const CitySelectionView(),
+    ),
+    GetPage(
+      transition: Transition.native,
+      name: ApplicationRoutes.district,
+      page: () => const DistrictSelectionView(),
     ),
   ];
 }

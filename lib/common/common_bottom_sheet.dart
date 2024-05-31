@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:investigators/models/subcategory.dart';
 import 'package:investigators/utils/global.dart';
 
 import '../utils/hex_color.dart';
 
 class CommonBottomSheet {
-  static Future<int?> showBottomSheet(String title, {required List<String> options}) async {
+  static Future<int?> showBottomSheet(String title, {required List<Subcategory> options}) async {
     return await Get.bottomSheet(
         enableDrag: false,
         isDismissible: false,
@@ -41,7 +42,7 @@ class CommonBottomSheet {
                                 alignment: Alignment.center,
                                 height: 52,
                                 decoration: BoxDecoration(border: Border(bottom: BorderSide(color: HexColor('#FFCCCCCC'), width: 0.5))),
-                                child: Text(options[index], style: TextStyle(color: HexColor('#FF3B414B'), fontSize: 15))))),
+                                child: Text(options[index].cateName, style: TextStyle(color: HexColor('#FF3B414B'), fontSize: 15))))),
                   )),
                 ),
               )
