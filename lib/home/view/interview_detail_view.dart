@@ -1,10 +1,7 @@
 import 'dart:collection';
 
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 import 'package:investigators/common/base_title_view.dart';
 import 'package:investigators/home/controller/interview_detail_controller.dart';
@@ -18,30 +15,31 @@ class InterviewDetailView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BaseTitleView(
-        title: 'Interview Details',
-        body: GetBuilder<InterviewDetailController>(
-          init: Get.put(InterviewDetailController()),
-          builder: (controller) => Column(children: [
-            Container(
-              color: Global.instance.themeColor,
-              child: TabBar(
-                tabs: controller.tabs,
-                controller: controller.tabController,
-                dividerHeight: 0,
-                indicatorColor: Colors.white,
-                labelStyle: const TextStyle(color: Colors.white, fontSize: 15, fontWeight: FontWeight.bold),
-                unselectedLabelStyle: TextStyle(color: HexColor('#9FB6C6'), fontSize: 15, fontWeight: FontWeight.bold),
-              ),
-            ),
-            Expanded(
-              child: TabBarView(
-                controller: controller.tabController,
-                children: [_interviewInformationView(), _userInformationView()],
-              ),
-            )
-          ]),
-        ));
+    return GetBuilder<InterviewDetailController>(
+        init: Get.put(InterviewDetailController()),
+        builder: (controller) => BaseTitleView(
+              title: 'Interview Details',
+              backAction: controller.backAction,
+              body: Column(children: [
+                Container(
+                  color: Global.instance.themeColor,
+                  child: TabBar(
+                    tabs: controller.tabs,
+                    controller: controller.tabController,
+                    dividerHeight: 0,
+                    indicatorColor: Colors.white,
+                    labelStyle: const TextStyle(color: Colors.white, fontSize: 15, fontWeight: FontWeight.bold),
+                    unselectedLabelStyle: TextStyle(color: HexColor('#9FB6C6'), fontSize: 15, fontWeight: FontWeight.bold),
+                  ),
+                ),
+                Expanded(
+                  child: TabBarView(
+                    controller: controller.tabController,
+                    children: [_interviewInformationView(), _userInformationView()],
+                  ),
+                )
+              ]),
+            ));
   }
 
   Widget _interviewInformationView() {
@@ -79,7 +77,7 @@ class InterviewDetailView extends StatelessWidget {
                     _radioItem('Unverifiable', onTap: () => controller.residentialStatusChanged(3), height: 25, isChecked: controller.residentialStatus == 3)
                   ]))
             ]),
-            const SizedBox(height: 20),
+            _subSection('Company Address'),
             Row(children: [
               Expanded(child: _itemTextField(controller.companyAddressController, isEnable: false, isMultiLine: true)),
               SizedBox(
@@ -162,7 +160,12 @@ class InterviewDetailView extends StatelessWidget {
                 _radioItem('No', onTap: () => controller.badgeStatusChanged(false), isChecked: controller.isBadge == false),
               ])
             ]),
-            if (controller.isBadge == true) _photoUploadItem(controller.incumbencyPhotos),
+            if (controller.isBadge == true)
+              _photoUploadItem(
+                controller.incumbencyPhotos,
+                itemOnTap: (index) => controller.photoItemOnTap(index, type: PhotoUploadType.incumbency),
+                addAction: () => controller.addPhotoAction(PhotoUploadType.incumbency),
+              ),
             const SizedBox(height: 20),
             _sectionHeader('Asset Class'),
             _subSection('Land'),
@@ -594,8 +597,6 @@ class InterviewDetailView extends StatelessWidget {
     return Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
       _subSection('Amount'),
       _itemTextField(amountController, isEnable: true),
-      _subSection('Estimated Unit Price'),
-      _itemTextField(priceController, isEnable: true),
       _subSection('Estimated Unit Price'),
       _itemTextField(priceController, isEnable: true),
       _subSection('Total Market Value'),

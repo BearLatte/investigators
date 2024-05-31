@@ -9,6 +9,7 @@ import 'package:investigators/models/address_model.dart';
 import 'package:investigators/models/ali_oss_access_data.dart';
 import 'package:investigators/models/appointment_pending_list.dart';
 import 'package:investigators/models/asset_options.dart';
+import 'package:investigators/models/interview_cache_model.dart';
 import 'package:investigators/models/interview_detail_info.dart';
 import 'package:investigators/models/interview_pending_list.dart';
 import 'package:investigators/models/returned_list.dart';
@@ -163,6 +164,39 @@ class JsonConvert {
     if (<AssetOptions>[] is M) {
       return data.map<AssetOptions>((Map<String, dynamic> e) => AssetOptions.fromJson(e)).toList() as M;
     }
+    if (<InterviewCacheModel>[] is M) {
+      return data.map<InterviewCacheModel>((Map<String, dynamic> e) => InterviewCacheModel.fromJson(e)).toList() as M;
+    }
+    if (<InterviewCacheModelSalaryAsset>[] is M) {
+      return data.map<InterviewCacheModelSalaryAsset>((Map<String, dynamic> e) => InterviewCacheModelSalaryAsset.fromJson(e)).toList() as M;
+    }
+    if (<InterviewCacheModelInvestmentInfo>[] is M) {
+      return data.map<InterviewCacheModelInvestmentInfo>((Map<String, dynamic> e) => InterviewCacheModelInvestmentInfo.fromJson(e)).toList() as M;
+    }
+    if (<InterviewCacheModelIncumbencyInfo>[] is M) {
+      return data.map<InterviewCacheModelIncumbencyInfo>((Map<String, dynamic> e) => InterviewCacheModelIncumbencyInfo.fromJson(e)).toList() as M;
+    }
+    if (<InterviewCacheModelLandAsset>[] is M) {
+      return data.map<InterviewCacheModelLandAsset>((Map<String, dynamic> e) => InterviewCacheModelLandAsset.fromJson(e)).toList() as M;
+    }
+    if (<InterviewCacheModelHouseAsset>[] is M) {
+      return data.map<InterviewCacheModelHouseAsset>((Map<String, dynamic> e) => InterviewCacheModelHouseAsset.fromJson(e)).toList() as M;
+    }
+    if (<InterviewCacheModelBusinessAsset>[] is M) {
+      return data.map<InterviewCacheModelBusinessAsset>((Map<String, dynamic> e) => InterviewCacheModelBusinessAsset.fromJson(e)).toList() as M;
+    }
+    if (<InterviewCacheModelLivestockAsset>[] is M) {
+      return data.map<InterviewCacheModelLivestockAsset>((Map<String, dynamic> e) => InterviewCacheModelLivestockAsset.fromJson(e)).toList() as M;
+    }
+    if (<InterviewCacheModelVehicle>[] is M) {
+      return data.map<InterviewCacheModelVehicle>((Map<String, dynamic> e) => InterviewCacheModelVehicle.fromJson(e)).toList() as M;
+    }
+    if (<InterviewCacheModelOtherSupportingMaterials>[] is M) {
+      return data.map<InterviewCacheModelOtherSupportingMaterials>((Map<String, dynamic> e) => InterviewCacheModelOtherSupportingMaterials.fromJson(e)).toList() as M;
+    }
+    if (<InterviewCacheModelRefuseLoanInfo>[] is M) {
+      return data.map<InterviewCacheModelRefuseLoanInfo>((Map<String, dynamic> e) => InterviewCacheModelRefuseLoanInfo.fromJson(e)).toList() as M;
+    }
     if (<InterviewDetailInfo>[] is M) {
       return data.map<InterviewDetailInfo>((Map<String, dynamic> e) => InterviewDetailInfo.fromJson(e)).toList() as M;
     }
@@ -279,6 +313,17 @@ class JsonConvertClassCollection {
     (AppointmentPendingListData).toString(): AppointmentPendingListData.fromJson,
     (AppointmentPendingListDataIdentityInfo).toString(): AppointmentPendingListDataIdentityInfo.fromJson,
     (AssetOptions).toString(): AssetOptions.fromJson,
+    (InterviewCacheModel).toString(): InterviewCacheModel.fromJson,
+    (InterviewCacheModelSalaryAsset).toString(): InterviewCacheModelSalaryAsset.fromJson,
+    (InterviewCacheModelInvestmentInfo).toString(): InterviewCacheModelInvestmentInfo.fromJson,
+    (InterviewCacheModelIncumbencyInfo).toString(): InterviewCacheModelIncumbencyInfo.fromJson,
+    (InterviewCacheModelLandAsset).toString(): InterviewCacheModelLandAsset.fromJson,
+    (InterviewCacheModelHouseAsset).toString(): InterviewCacheModelHouseAsset.fromJson,
+    (InterviewCacheModelBusinessAsset).toString(): InterviewCacheModelBusinessAsset.fromJson,
+    (InterviewCacheModelLivestockAsset).toString(): InterviewCacheModelLivestockAsset.fromJson,
+    (InterviewCacheModelVehicle).toString(): InterviewCacheModelVehicle.fromJson,
+    (InterviewCacheModelOtherSupportingMaterials).toString(): InterviewCacheModelOtherSupportingMaterials.fromJson,
+    (InterviewCacheModelRefuseLoanInfo).toString(): InterviewCacheModelRefuseLoanInfo.fromJson,
     (InterviewDetailInfo).toString(): InterviewDetailInfo.fromJson,
     (InterviewDetailInfoInterviewInfo).toString(): InterviewDetailInfoInterviewInfo.fromJson,
     (InterviewDetailInfoInterviewInfoAddress).toString(): InterviewDetailInfoInterviewInfoAddress.fromJson,

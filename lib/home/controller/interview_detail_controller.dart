@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:camera/camera.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -6,6 +8,7 @@ import 'package:intl/intl.dart';
 import 'package:investigators/common/common_bottom_sheet.dart';
 import 'package:investigators/common/common_snack_bar.dart';
 import 'package:investigators/models/asset_options.dart';
+import 'package:investigators/models/interview_cache_model.dart';
 import 'package:investigators/models/interview_detail_info.dart';
 import 'package:investigators/models/subcategory.dart';
 import 'package:investigators/network_service/index.dart';
@@ -635,6 +638,90 @@ class InterviewDetailController extends GetxController with GetTickerProviderSta
     });
   }
 
+  void backAction() {
+    InterviewCacheModel model = InterviewCacheModel();
+    model.nameStatus = isNameCorrect;
+    model.residentialStatus = residentialStatus;
+    model.companyStatus = companyAddressStatus;
+    model.isInPerson = isInPerson;
+    model.otherIdentificationPhotos = identityPhotos;
+
+    InterviewCacheModelSalaryAsset salaryAsset = InterviewCacheModelSalaryAsset();
+    salaryAsset.salary = _curSalary;
+    salaryAsset.salaryPhotos = salaryPhotos;
+    salaryAsset.monthlyFlow = _curMoneyFlow;
+    salaryAsset.monthlyFlowPhotos = moneyFlowPhotos;
+    model.salaryAsset = salaryAsset;
+
+    InterviewCacheModelInvestmentInfo investmentInfo = InterviewCacheModelInvestmentInfo();
+    investmentInfo.investmentType = _curInvestment;
+    investmentInfo.voucherValidity = investmentDateOfDeadlineController.text;
+    investmentInfo.voucherAmount = investmentAmountController.text;
+    investmentInfo.photos = investmentPhotos;
+    investmentInfo.photos = investmentPhotos;
+    model.investmentInfo = investmentInfo;
+
+    InterviewCacheModelIncumbencyInfo incumbencyInfo = InterviewCacheModelIncumbencyInfo();
+    incumbencyInfo.badge = isBadge;
+    incumbencyInfo.photos = incumbencyPhotos;
+    model.incumbencyInfo = incumbencyInfo;
+
+    InterviewCacheModelLandAsset landAsset = InterviewCacheModelLandAsset();
+    landAsset.holdStatus = isHoldLand;
+    landAsset.location = landLocationController.text;
+    landAsset.fullAddress = landFullAddressController.text;
+    landAsset.estimatedArea = landEstimatedController.text;
+    landAsset.marketValue = landMarketValueController.text;
+    landAsset.locationCode = curLandCode;
+    landAsset.photos = landPhotos;
+    model.landAsset = landAsset;
+
+    InterviewCacheModelHouseAsset houseAsset = InterviewCacheModelHouseAsset();
+    houseAsset.location = houseLocationController.text;
+    houseAsset.locationCode = curHouseCode;
+    houseAsset.holdStatus = isHosing;
+    houseAsset.fullAddress = houseFullAddressController.text;
+    houseAsset.purchaseTime = housePurchaseTimeController.text;
+    houseAsset.purchasePrice = housePriceController.text;
+    houseAsset.marketValue = houseMarketValueController.text;
+    houseAsset.photos = housePhotos;
+    model.houseAsset = houseAsset;
+
+    InterviewCacheModelBusinessAsset businessAsset = InterviewCacheModelBusinessAsset();
+    businessAsset.holdStatus = isBusiness;
+    businessAsset.location = businessLocationController.text;
+    businessAsset.locationCode = curBusinessCode;
+    businessAsset.fullAddress = businessFullAddressController.text;
+    businessAsset.purchaseTime = businessPurchaseTimeController.text;
+    businessAsset.purchasePrice = businessPriceController.text;
+    businessAsset.marketValue = businessMarketValueController.text;
+    businessAsset.photos = businessPhotos;
+    model.businessAsset = businessAsset;
+
+    InterviewCacheModelLivestockAsset livestockAsset = InterviewCacheModelLivestockAsset();
+    livestockAsset.assetType = _curLivestock;
+    livestockAsset.amount = livestockAmountController.text;
+    livestockAsset.estimatedUnitPrice = livestockUnitPriceController.text;
+    livestockAsset.totalMarketValue = livestockTotalValueController.text;
+    livestockAsset.photos = livestockPhotos;
+    model.livestockAsset = livestockAsset;
+
+    InterviewCacheModelVehicle vehicle = InterviewCacheModelVehicle();
+    vehicle.vehicleType = _curVehicle;
+    vehicle.purchasePrice = vehiclePurchasePriceController.text;
+    vehicle.purchaseDate = vehiclePurchaseDateController.text;
+    vehicle.marketValue = vehicleMarketValueController.text;
+    vehicle.photos = vehiclePhotos;
+    model.vehicle = vehicle;
+
+    InterviewCacheModelOtherSupportingMaterials otherSupportingMaterials = InterviewCacheModelOtherSupportingMaterials();
+    otherSupportingMaterials.addition = otherSupportingController.text;
+    model.otherSupportingMaterials = otherSupportingMaterials;
+
+    var jsonString =  model.toString();
+    debugPrint(jsonString);
+  }
+
   void interviewAction() {
     debugPrint('DEBUG: 保存面签内容');
   }
@@ -662,7 +749,7 @@ class InterviewDetailController extends GetxController with GetTickerProviderSta
   // 当前选中的投资凭证
   Subcategory? _curInvestment;
 
-// 当前选中的畜牧资产
+  // 当前选中的畜牧资产
   Subcategory? _curLivestock;
 
   // 当前选中的机动车资产

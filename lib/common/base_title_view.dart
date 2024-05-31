@@ -20,7 +20,7 @@ class BaseTitleView extends StatelessWidget {
       appBar: AppBar(
         centerTitle: true,
         backgroundColor: Global.instance.themeColor,
-        leading: IconButton(onPressed: backAction ?? Get.back, icon:const Icon(Icons.arrow_back_ios_new_rounded, size: 15, color: Colors.white)),
+        leading: IconButton(onPressed: backAction ?? Get.back, icon: const Icon(Icons.arrow_back_ios_new_rounded, size: 15, color: Colors.white)),
         title: Text(title, style: const TextStyle(color: Colors.white, fontSize: 15, fontWeight: FontWeight.bold)),
       ),
       body: body,
