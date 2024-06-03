@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 import 'package:investigators/environment/main_com.dart';
@@ -8,6 +10,8 @@ import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
 import '../../common/common_snack_bar.dart';
+import '../../models/interview_cache_model.dart';
+import '../../utils/global.dart';
 
 class InterviewController extends GetxController {
   int currentPage = 0;
@@ -70,6 +74,17 @@ class InterviewController extends GetxController {
 
     if (result == 'error') {
       CommonSnackBar.showSnackBar('Unknown error!');
+    } else {
+      InterviewCacheModel model = result as InterviewCacheModel;
+      var json = model.toJson();
+      String? allCaches = Global.instance.prefs.getString(Global.instance.prefs.getString(Global.CURRENT_PHONE_NUMBER));
+      if (allCaches == null) {
+        Global.instance.prefs.setString(Global.instance.prefs.getString(Global.CURRENT_PHONE_NUMBER), jsonEncode({interview.signRecordId: json}));
+      } else {
+        var allCacheJson = jsonDecode(allCaches);
+        allCacheJson[interview.signRecordId] = json;
+        Global.instance.prefs.setString(Global.instance.prefs.getString(Global.CURRENT_PHONE_NUMBER), jsonEncode(allCacheJson));
+      }
     }
   }
 

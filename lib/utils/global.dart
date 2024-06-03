@@ -27,6 +27,7 @@ class Global {
 
   static const String ACCESS_TOKEN_KEY = 'kAccessToken';
   static const String LOG_IN_BADGE_KEY = 'kIsLogin';
+  static const String CURRENT_PHONE_NUMBER = 'kCurrentPhoneNumber';
 
   // 主题颜色
   Color themeColor = HexColor('#008CE2');

@@ -54,9 +54,9 @@ class InterviewCacheModelSalaryAsset {
   @JSONField(name: "monthly_flow")
   Subcategory? monthlyFlow;
   @JSONField(name: "salary_photos")
-  List<String>? salaryPhotos;
+  List<String> salaryPhotos = [];
   @JSONField(name: "monthly_flow_photos")
-  List<String>? monthlyFlowPhotos;
+  List<String> monthlyFlowPhotos = [];
 
   InterviewCacheModelSalaryAsset();
 
@@ -75,10 +75,10 @@ class InterviewCacheModelInvestmentInfo {
   @JSONField(name: "investment_type")
   Subcategory? investmentType;
   @JSONField(name: "voucher_validity")
-  String? voucherValidity;
+  String voucherValidity = '';
   @JSONField(name: "voucher_amount")
-  String? voucherAmount;
-  List<String>? photos;
+  String voucherAmount = '';
+  List<String> photos = [];
 
   InterviewCacheModelInvestmentInfo();
 
@@ -95,7 +95,7 @@ class InterviewCacheModelInvestmentInfo {
 @JsonSerializable()
 class InterviewCacheModelIncumbencyInfo {
   bool? badge;
-  List<String>? photos;
+  List<String> photos = [];
 
   InterviewCacheModelIncumbencyInfo();
 
@@ -113,16 +113,16 @@ class InterviewCacheModelIncumbencyInfo {
 class InterviewCacheModelLandAsset {
   @JSONField(name: "hold_status")
   bool? holdStatus;
-  String? location;
+  String location = '';
   @JSONField(name: "location_code")
   String? locationCode;
   @JSONField(name: "full_address")
-  String? fullAddress;
+  String fullAddress = '';
   @JSONField(name: "estimated_area")
-  String? estimatedArea;
+  String estimatedArea = '';
   @JSONField(name: "market_value")
-  String? marketValue;
-  List<String>? photos;
+  String marketValue = '';
+  List<String> photos = [];
 
   InterviewCacheModelLandAsset();
 
@@ -140,18 +140,18 @@ class InterviewCacheModelLandAsset {
 class InterviewCacheModelHouseAsset {
   @JSONField(name: "hold_status")
   bool? holdStatus;
-  String? location;
+  String location = '';
   @JSONField(name: "location_code")
   String? locationCode;
   @JSONField(name: "full_address")
-  String? fullAddress;
+  String fullAddress = '';
   @JSONField(name: "purchase_time")
-  String? purchaseTime;
+  String purchaseTime = '';
   @JSONField(name: "purchase_price")
-  String? purchasePrice;
+  String purchasePrice = '';
   @JSONField(name: "market_value")
-  String? marketValue;
-  List<String>? photos;
+  String marketValue = '';
+  List<String> photos = [];
 
   InterviewCacheModelHouseAsset();
 
@@ -169,18 +169,18 @@ class InterviewCacheModelHouseAsset {
 class InterviewCacheModelBusinessAsset {
   @JSONField(name: "hold_status")
   bool? holdStatus;
-  String? location;
+  String location = '';
   @JSONField(name: "location_code")
   String? locationCode;
   @JSONField(name: "full_address")
-  String? fullAddress;
+  String fullAddress = '';
   @JSONField(name: "purchase_time")
-  String? purchaseTime;
+  String purchaseTime = '';
   @JSONField(name: "purchase_price")
-  String?purchasePrice;
+  String purchasePrice = '';
   @JSONField(name: "market_value")
-  String? marketValue;
-  List<String>? photos;
+  String marketValue = '';
+  List<String> photos = [];
 
   InterviewCacheModelBusinessAsset();
 
@@ -198,12 +198,12 @@ class InterviewCacheModelBusinessAsset {
 class InterviewCacheModelLivestockAsset {
   @JSONField(name: "asset_type")
   Subcategory? assetType;
-  String? amount;
+  String amount = '';
   @JSONField(name: "estimated_unit_price")
-  String? estimatedUnitPrice;
+  String estimatedUnitPrice = '';
   @JSONField(name: "total_market_value")
-  String? totalMarketValue;
-  List<String>? photos;
+  String totalMarketValue = '';
+  List<String> photos = [];
 
   InterviewCacheModelLivestockAsset();
 
@@ -222,12 +222,12 @@ class InterviewCacheModelVehicle {
   @JSONField(name: "vehicle_type")
   Subcategory? vehicleType;
   @JSONField(name: "purchase_price")
-  String? purchasePrice;
+  String purchasePrice = '';
   @JSONField(name: "purchase_date")
- String? purchaseDate;
+  String purchaseDate = '';
   @JSONField(name: "market_value")
-  String? marketValue;
-  List<String>? photos;
+  String marketValue = '';
+  List<String> photos = [];
 
   InterviewCacheModelVehicle();
 
@@ -243,8 +243,8 @@ class InterviewCacheModelVehicle {
 
 @JsonSerializable()
 class InterviewCacheModelOtherSupportingMaterials {
-  String? addition;
-  List<String>? photos;
+  String addition = '';
+  List<String> photos = [];
 
   InterviewCacheModelOtherSupportingMaterials();
 
@@ -261,7 +261,7 @@ class InterviewCacheModelOtherSupportingMaterials {
 @JsonSerializable()
 class InterviewCacheModelRefuseLoanInfo {
   bool status = false;
-  String? recommend;
+  String recommend = '';
 
   InterviewCacheModelRefuseLoanInfo();
 

@@ -246,12 +246,16 @@ class InterviewDetailController extends GetxController with GetTickerProviderSta
 
     String? clientId = Get.arguments['clientId'];
     String? signRecordId = Get.arguments['signRecordId'];
+
     if (MethodUtil.isNullOrEmpty(clientId) || MethodUtil.isNullOrEmpty(signRecordId)) {
       return;
     }
+    _currentSignRecordId = signRecordId!;
     await fetchAllAssetOptions();
-    fetchInterViewDetail(signRecordId!, clientId!);
+    await fetchInterViewDetail(signRecordId, clientId!);
     cameras = await availableCameras();
+
+    fetchCache();
   }
 
   @override
@@ -307,7 +311,7 @@ class InterviewDetailController extends GetxController with GetTickerProviderSta
   /*
   * 获取面签详细信息
   * */
-  void fetchInterViewDetail(String signRecordId, String clientId) async {
+  Future<void> fetchInterViewDetail(String signRecordId, String clientId) async {
     InterviewDetailInfo? detailInfo = await NetworkService.fetchInterviewDetail(
       clientId: clientId,
       signRecordId: signRecordId,
@@ -411,6 +415,107 @@ class InterviewDetailController extends GetxController with GetTickerProviderSta
     _investmentOptions = options.investmentCertificate;
     _livestockOptions = options.livestockAssets;
     _vehicleOptions = options.motorVehicles;
+  }
+
+  // 获取缓存
+  void fetchCache() {
+    String? allCache = Global.instance.prefs.getString(Global.instance.prefs.getString(Global.CURRENT_PHONE_NUMBER));
+    if (allCache == null) return;
+    Map<String, dynamic> allCacheObj = jsonDecode(allCache);
+    Map<String, dynamic>? json = allCacheObj[_currentSignRecordId];
+    if (json == null) return;
+    InterviewCacheModel cacheModel = InterviewCacheModel.fromJson(json);
+    isNameCorrect = cacheModel.nameStatus;
+    residentialStatus = cacheModel.residentialStatus;
+    companyAddressStatus = cacheModel.companyStatus;
+    isInPerson = cacheModel.isInPerson;
+    identityPhotos = cacheModel.otherIdentificationPhotos;
+    if (!MethodUtil.isNullOrEmpty(cacheModel.salaryAsset?.salary)) {
+      _curSalary = cacheModel.salaryAsset!.salary;
+      salaryController.text = cacheModel.salaryAsset!.salary!.cateName;
+      salaryPhotos = cacheModel.salaryAsset!.salaryPhotos;
+    }
+
+    if (!MethodUtil.isNullOrEmpty(cacheModel.salaryAsset?.monthlyFlow)) {
+      _curMoneyFlow = cacheModel.salaryAsset!.monthlyFlow;
+      moneyFlowController.text = cacheModel.salaryAsset!.monthlyFlow!.cateName;
+      moneyFlowPhotos = cacheModel.salaryAsset!.monthlyFlowPhotos;
+    }
+
+    if (!MethodUtil.isNullOrEmpty(cacheModel.investmentInfo)) {
+      _curInvestment = cacheModel.investmentInfo?.investmentType;
+      investmentController.text = cacheModel.investmentInfo!.investmentType!.cateName;
+      investmentPhotos = cacheModel.investmentInfo!.photos;
+      investmentDateOfDeadlineController.text = cacheModel.investmentInfo!.voucherValidity;
+      investmentAmountController.text = cacheModel.investmentInfo!.voucherAmount;
+    }
+
+    if (!MethodUtil.isNullOrEmpty(cacheModel.incumbencyInfo)) {
+      isBadge = cacheModel.incumbencyInfo!.badge;
+      incumbencyPhotos = cacheModel.incumbencyInfo!.photos;
+    }
+
+    if (!MethodUtil.isNullOrEmpty(cacheModel.landAsset)) {
+      isHoldLand = cacheModel.landAsset!.holdStatus;
+      curLandCode = cacheModel.landAsset?.locationCode;
+      landLocationController.text = cacheModel.landAsset!.location;
+      landFullAddressController.text = cacheModel.landAsset!.fullAddress;
+      landEstimatedController.text = cacheModel.landAsset!.estimatedArea;
+      landMarketValueController.text = cacheModel.landAsset!.marketValue;
+      landPhotos = cacheModel.landAsset!.photos;
+    }
+
+    if (!MethodUtil.isNullOrEmpty(cacheModel.houseAsset)) {
+      isHosing = cacheModel.houseAsset?.holdStatus;
+      houseLocationController.text = cacheModel.houseAsset!.location;
+      curHouseCode = cacheModel.houseAsset?.locationCode;
+      houseFullAddressController.text = cacheModel.houseAsset!.fullAddress;
+      housePurchaseTimeController.text = cacheModel.houseAsset!.purchaseTime;
+      housePriceController.text = cacheModel.houseAsset!.purchasePrice;
+      houseMarketValueController.text = cacheModel.houseAsset!.marketValue;
+      housePhotos = cacheModel.houseAsset!.photos;
+    }
+
+    if (!MethodUtil.isNullOrEmpty(cacheModel.businessAsset)) {
+      isBusiness = cacheModel.businessAsset?.holdStatus;
+      businessLocationController.text = cacheModel.businessAsset!.location;
+      curBusinessCode = cacheModel.businessAsset?.locationCode;
+      businessFullAddressController.text = cacheModel.businessAsset!.fullAddress;
+      businessPurchaseTimeController.text = cacheModel.businessAsset!.purchaseTime;
+      businessPriceController.text = cacheModel.businessAsset!.purchasePrice;
+      businessMarketValueController.text = cacheModel.businessAsset!.marketValue;
+      businessPhotos = cacheModel.businessAsset!.photos;
+    }
+
+    if (!MethodUtil.isNullOrEmpty(cacheModel.livestockAsset)) {
+      _curLivestock = cacheModel.livestockAsset!.assetType;
+      livestockController.text = cacheModel.livestockAsset!.assetType!.cateName;
+      livestockAmountController.text = cacheModel.livestockAsset!.amount;
+      livestockUnitPriceController.text = cacheModel.livestockAsset!.estimatedUnitPrice;
+      livestockTotalValueController.text = cacheModel.livestockAsset!.totalMarketValue;
+      livestockPhotos = cacheModel.livestockAsset!.photos;
+    }
+
+    if (!MethodUtil.isNullOrEmpty(cacheModel.vehicle)) {
+      _curVehicle = cacheModel.vehicle!.vehicleType;
+      vehicleController.text = cacheModel.vehicle!.vehicleType!.cateName;
+      vehiclePurchasePriceController.text = cacheModel.vehicle!.purchasePrice;
+      vehiclePurchaseDateController.text = cacheModel.vehicle!.purchaseDate;
+      vehicleMarketValueController.text = cacheModel.vehicle!.marketValue;
+      vehiclePhotos = cacheModel.vehicle!.photos;
+    }
+
+    if (!MethodUtil.isNullOrEmpty(cacheModel.otherSupportingMaterials)) {
+      otherSupportingController.text = cacheModel.otherSupportingMaterials!.addition;
+      otherAssetPhotos = cacheModel.otherSupportingMaterials!.photos;
+    }
+
+    if (!MethodUtil.isNullOrEmpty(cacheModel.refuseLoanInfo)) {
+      isRefuseLoan = cacheModel.refuseLoanInfo!.status;
+      refuseLoanReasonController.text = cacheModel.refuseLoanInfo!.recommend;
+    }
+
+    update();
   }
 
   void nameStatusChanged(bool isCorrect) {
@@ -716,10 +821,15 @@ class InterviewDetailController extends GetxController with GetTickerProviderSta
 
     InterviewCacheModelOtherSupportingMaterials otherSupportingMaterials = InterviewCacheModelOtherSupportingMaterials();
     otherSupportingMaterials.addition = otherSupportingController.text;
+    otherSupportingMaterials.photos = otherAssetPhotos;
     model.otherSupportingMaterials = otherSupportingMaterials;
 
-    var jsonString =  model.toString();
-    debugPrint(jsonString);
+    InterviewCacheModelRefuseLoanInfo refuseLoanInfo = InterviewCacheModelRefuseLoanInfo();
+    refuseLoanInfo.status = isRefuseLoan;
+    refuseLoanInfo.recommend = refuseLoanReasonController.text;
+    model.refuseLoanInfo = refuseLoanInfo;
+
+    Get.back(result: model);
   }
 
   void interviewAction() {
@@ -763,4 +873,7 @@ class InterviewDetailController extends GetxController with GetTickerProviderSta
 
   // 当前选中的商户地理编码
   String? curBusinessCode;
+
+  // 当前的item Id
+  late String _currentSignRecordId;
 }

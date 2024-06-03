@@ -12,7 +12,6 @@ import 'package:investigators/models/interview_detail_info.dart';
 import 'package:investigators/models/interview_pending_list.dart';
 import 'package:investigators/models/returned_list.dart';
 import 'package:investigators/models/sign_history_model.dart';
-import 'package:investigators/models/subcategory.dart';
 import 'package:investigators/models/user_model.dart';
 import 'package:investigators/router/index.dart';
 import 'package:investigators/utils/global.dart';

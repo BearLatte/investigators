@@ -20,25 +20,27 @@ class InterviewDetailView extends StatelessWidget {
         builder: (controller) => BaseTitleView(
               title: 'Interview Details',
               backAction: controller.backAction,
-              body: Column(children: [
-                Container(
-                  color: Global.instance.themeColor,
-                  child: TabBar(
-                    tabs: controller.tabs,
-                    controller: controller.tabController,
-                    dividerHeight: 0,
-                    indicatorColor: Colors.white,
-                    labelStyle: const TextStyle(color: Colors.white, fontSize: 15, fontWeight: FontWeight.bold),
-                    unselectedLabelStyle: TextStyle(color: HexColor('#9FB6C6'), fontSize: 15, fontWeight: FontWeight.bold),
-                  ),
-                ),
-                Expanded(
-                  child: TabBarView(
-                    controller: controller.tabController,
-                    children: [_interviewInformationView(), _userInformationView()],
-                  ),
-                )
-              ]),
+              body: PopScope(
+                  canPop: false,
+                  child: Column(children: [
+                    Container(
+                      color: Global.instance.themeColor,
+                      child: TabBar(
+                        tabs: controller.tabs,
+                        controller: controller.tabController,
+                        dividerHeight: 0,
+                        indicatorColor: Colors.white,
+                        labelStyle: const TextStyle(color: Colors.white, fontSize: 15, fontWeight: FontWeight.bold),
+                        unselectedLabelStyle: TextStyle(color: HexColor('#9FB6C6'), fontSize: 15, fontWeight: FontWeight.bold),
+                      ),
+                    ),
+                    Expanded(
+                      child: TabBarView(
+                        controller: controller.tabController,
+                        children: [_interviewInformationView(), _userInformationView()],
+                      ),
+                    )
+                  ])),
             ));
   }
 
