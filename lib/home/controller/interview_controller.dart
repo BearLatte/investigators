@@ -2,7 +2,6 @@ import 'dart:convert';
 
 import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
-import 'package:investigators/environment/main_com.dart';
 import 'package:investigators/models/interview_pending_list.dart';
 import 'package:investigators/network_service/index.dart';
 import 'package:investigators/router/index.dart';
@@ -70,10 +69,13 @@ class InterviewController extends GetxController {
     var result = await Get.toNamed(ApplicationRoutes.interviewDetail, arguments: {
       'signRecordId': interview.signRecordId,
       'clientId': interview.clientId,
+      'type': 0,
     });
 
     if (result == 'error') {
       CommonSnackBar.showSnackBar('Unknown error!');
+    } else if (result == null) {
+      return onRefresh(true);
     } else {
       InterviewCacheModel model = result as InterviewCacheModel;
       var json = model.toJson();

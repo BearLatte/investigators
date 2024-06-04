@@ -715,6 +715,18 @@ InterviewDetailInfoClientInfoCredit $InterviewDetailInfoClientInfoCreditFromJson
   if (loanDays != null) {
     interviewDetailInfoClientInfoCredit.loanDays = loanDays;
   }
+  final String? pid = jsonConvert.convert<String>(json['pid']);
+  if (pid != null) {
+    interviewDetailInfoClientInfoCredit.pid = pid;
+  }
+  final String? token = jsonConvert.convert<String>(json['token']);
+  if (token != null) {
+    interviewDetailInfoClientInfoCredit.token = token;
+  }
+  final String? rid = jsonConvert.convert<String>(json['rid']);
+  if (rid != null) {
+    interviewDetailInfoClientInfoCredit.rid = rid;
+  }
   return interviewDetailInfoClientInfoCredit;
 }
 
@@ -723,6 +735,9 @@ Map<String, dynamic> $InterviewDetailInfoClientInfoCreditToJson(InterviewDetailI
   data['amount'] = entity.amount;
   data['ins_num'] = entity.insNum;
   data['loan_days'] = entity.loanDays;
+  data['pid'] = entity.pid;
+  data['token'] = entity.token;
+  data['rid'] = entity.rid;
   return data;
 }
 
@@ -731,11 +746,17 @@ extension InterviewDetailInfoClientInfoCreditExtension on InterviewDetailInfoCli
     String? amount,
     String? insNum,
     String? loanDays,
+    String? pid,
+    String? token,
+    String? rid,
   }) {
     return InterviewDetailInfoClientInfoCredit()
       ..amount = amount ?? this.amount
       ..insNum = insNum ?? this.insNum
-      ..loanDays = loanDays ?? this.loanDays;
+      ..loanDays = loanDays ?? this.loanDays
+      ..pid = pid ?? this.pid
+      ..token = token ?? this.token
+      ..rid = rid ?? this.rid;
   }
 }
 

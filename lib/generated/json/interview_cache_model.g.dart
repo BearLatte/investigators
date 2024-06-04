@@ -20,8 +20,7 @@ InterviewCacheModel $InterviewCacheModelFromJson(Map<String, dynamic> json) {
   if (isInPerson != null) {
     interviewCacheModel.isInPerson = isInPerson;
   }
-  final List<String>? otherIdentificationPhotos = (json['other_identification_photos'] as List<dynamic>?)?.map(
-          (e) => jsonConvert.convert<String>(e) as String).toList();
+  final List<String>? otherIdentificationPhotos = (json['other_identification_photos'] as List<dynamic>?)?.map((e) => jsonConvert.convert<String>(e) as String).toList();
   if (otherIdentificationPhotos != null) {
     interviewCacheModel.otherIdentificationPhotos = otherIdentificationPhotos;
   }
@@ -57,8 +56,8 @@ InterviewCacheModel $InterviewCacheModelFromJson(Map<String, dynamic> json) {
   if (vehicle != null) {
     interviewCacheModel.vehicle = vehicle;
   }
-  final InterviewCacheModelOtherSupportingMaterials? otherSupportingMaterials = jsonConvert.convert<InterviewCacheModelOtherSupportingMaterials>(
-      json['other_supporting_materials']);
+  final InterviewCacheModelOtherSupportingMaterials? otherSupportingMaterials =
+      jsonConvert.convert<InterviewCacheModelOtherSupportingMaterials>(json['other_supporting_materials']);
   if (otherSupportingMaterials != null) {
     interviewCacheModel.otherSupportingMaterials = otherSupportingMaterials;
   }
@@ -136,13 +135,11 @@ InterviewCacheModelSalaryAsset $InterviewCacheModelSalaryAssetFromJson(Map<Strin
   if (monthlyFlow != null) {
     interviewCacheModelSalaryAsset.monthlyFlow = monthlyFlow;
   }
-  final List<String>? salaryPhotos = (json['salary_photos'] as List<dynamic>?)?.map(
-          (e) => jsonConvert.convert<String>(e) as String).toList();
+  final List<String>? salaryPhotos = (json['salary_photos'] as List<dynamic>?)?.map((e) => jsonConvert.convert<String>(e) as String).toList();
   if (salaryPhotos != null) {
     interviewCacheModelSalaryAsset.salaryPhotos = salaryPhotos;
   }
-  final List<String>? monthlyFlowPhotos = (json['monthly_flow_photos'] as List<dynamic>?)?.map(
-          (e) => jsonConvert.convert<String>(e) as String).toList();
+  final List<String>? monthlyFlowPhotos = (json['monthly_flow_photos'] as List<dynamic>?)?.map((e) => jsonConvert.convert<String>(e) as String).toList();
   if (monthlyFlowPhotos != null) {
     interviewCacheModelSalaryAsset.monthlyFlowPhotos = monthlyFlowPhotos;
   }
@@ -187,8 +184,7 @@ InterviewCacheModelInvestmentInfo $InterviewCacheModelInvestmentInfoFromJson(Map
   if (voucherAmount != null) {
     interviewCacheModelInvestmentInfo.voucherAmount = voucherAmount;
   }
-  final List<String>? photos = (json['photos'] as List<dynamic>?)?.map(
-          (e) => jsonConvert.convert<String>(e) as String).toList();
+  final List<String>? photos = (json['photos'] as List<dynamic>?)?.map((e) => jsonConvert.convert<String>(e) as String).toList();
   if (photos != null) {
     interviewCacheModelInvestmentInfo.photos = photos;
   }
@@ -225,8 +221,7 @@ InterviewCacheModelIncumbencyInfo $InterviewCacheModelIncumbencyInfoFromJson(Map
   if (badge != null) {
     interviewCacheModelIncumbencyInfo.badge = badge;
   }
-  final List<String>? photos = (json['photos'] as List<dynamic>?)?.map(
-          (e) => jsonConvert.convert<String>(e) as String).toList();
+  final List<String>? photos = (json['photos'] as List<dynamic>?)?.map((e) => jsonConvert.convert<String>(e) as String).toList();
   if (photos != null) {
     interviewCacheModelIncumbencyInfo.photos = photos;
   }
@@ -277,8 +272,7 @@ InterviewCacheModelLandAsset $InterviewCacheModelLandAssetFromJson(Map<String, d
   if (marketValue != null) {
     interviewCacheModelLandAsset.marketValue = marketValue;
   }
-  final List<String>? photos = (json['photos'] as List<dynamic>?)?.map(
-          (e) => jsonConvert.convert<String>(e) as String).toList();
+  final List<String>? photos = (json['photos'] as List<dynamic>?)?.map((e) => jsonConvert.convert<String>(e) as String).toList();
   if (photos != null) {
     interviewCacheModelLandAsset.photos = photos;
   }
@@ -348,8 +342,7 @@ InterviewCacheModelHouseAsset $InterviewCacheModelHouseAssetFromJson(Map<String,
   if (marketValue != null) {
     interviewCacheModelHouseAsset.marketValue = marketValue;
   }
-  final List<String>? photos = (json['photos'] as List<dynamic>?)?.map(
-          (e) => jsonConvert.convert<String>(e) as String).toList();
+  final List<String>? photos = (json['photos'] as List<dynamic>?)?.map((e) => jsonConvert.convert<String>(e) as String).toList();
   if (photos != null) {
     interviewCacheModelHouseAsset.photos = photos;
   }
@@ -422,8 +415,7 @@ InterviewCacheModelBusinessAsset $InterviewCacheModelBusinessAssetFromJson(Map<S
   if (marketValue != null) {
     interviewCacheModelBusinessAsset.marketValue = marketValue;
   }
-  final List<String>? photos = (json['photos'] as List<dynamic>?)?.map(
-          (e) => jsonConvert.convert<String>(e) as String).toList();
+  final List<String>? photos = (json['photos'] as List<dynamic>?)?.map((e) => jsonConvert.convert<String>(e) as String).toList();
   if (photos != null) {
     interviewCacheModelBusinessAsset.photos = photos;
   }
@@ -484,8 +476,7 @@ InterviewCacheModelLivestockAsset $InterviewCacheModelLivestockAssetFromJson(Map
   if (totalMarketValue != null) {
     interviewCacheModelLivestockAsset.totalMarketValue = totalMarketValue;
   }
-  final List<String>? photos = (json['photos'] as List<dynamic>?)?.map(
-          (e) => jsonConvert.convert<String>(e) as String).toList();
+  final List<String>? photos = (json['photos'] as List<dynamic>?)?.map((e) => jsonConvert.convert<String>(e) as String).toList();
   if (photos != null) {
     interviewCacheModelLivestockAsset.photos = photos;
   }
@@ -537,8 +528,7 @@ InterviewCacheModelVehicle $InterviewCacheModelVehicleFromJson(Map<String, dynam
   if (marketValue != null) {
     interviewCacheModelVehicle.marketValue = marketValue;
   }
-  final List<String>? photos = (json['photos'] as List<dynamic>?)?.map(
-          (e) => jsonConvert.convert<String>(e) as String).toList();
+  final List<String>? photos = (json['photos'] as List<dynamic>?)?.map((e) => jsonConvert.convert<String>(e) as String).toList();
   if (photos != null) {
     interviewCacheModelVehicle.photos = photos;
   }
@@ -578,8 +568,7 @@ InterviewCacheModelOtherSupportingMaterials $InterviewCacheModelOtherSupportingM
   if (addition != null) {
     interviewCacheModelOtherSupportingMaterials.addition = addition;
   }
-  final List<String>? photos = (json['photos'] as List<dynamic>?)?.map(
-          (e) => jsonConvert.convert<String>(e) as String).toList();
+  final List<String>? photos = (json['photos'] as List<dynamic>?)?.map((e) => jsonConvert.convert<String>(e) as String).toList();
   if (photos != null) {
     interviewCacheModelOtherSupportingMaterials.photos = photos;
   }

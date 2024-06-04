@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/widgets.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_nb_net/flutter_net.dart';
@@ -157,6 +159,16 @@ class NetworkService {
     return response.data;
   }
 
+  // 保存面签内容
+  static Future<bool> saveInterviewContent(Map<String, dynamic> params) async {
+    BaseResponse response = await _post('/inv/pending/recordSign', params);
+    if (response.code == 1) {
+      return true;
+    }
+    CommonSnackBar.showSnackBar(response.msg, type: SnackType.error);
+    return false;
+  }
+
   static Future<List<AddressListItem>?> fetchAddress(String type, {String? parentCode}) async {
     BaseResponse response = await _get<List<AddressListItem>>('/inv/address/getAddrListByType', params: {'type': type, 'parent_code': parentCode});
     if (response.code == 0) {
@@ -196,7 +208,6 @@ class NetworkService {
     }
 
     Map<String, dynamic> encryptedParams = await _encryptParametersValue(params);
-
     var response = await post(path, data: encryptedParams);
     var result = response.when(
       success: (data) {

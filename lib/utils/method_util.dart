@@ -37,6 +37,16 @@ class MethodUtil {
     return false;
   }
 
+  static List<String> configImageNames(List<String> imgs) {
+    List<String> photoNames = [];
+    for (var img in imgs) {
+      int index = img.lastIndexOf('/');
+      photoNames.add(img.substring(index + 1));
+    }
+
+    return photoNames;
+  }
+
   /*
   * 无法预约功能弹窗
   * */

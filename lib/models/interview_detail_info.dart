@@ -341,6 +341,9 @@ class InterviewDetailInfoClientInfoCredit {
 	late String insNum;
 	@JSONField(name: "loan_days")
 	late String loanDays;
+	late String pid;
+	late String token;
+	late String rid;
 
 	InterviewDetailInfoClientInfoCredit();
 

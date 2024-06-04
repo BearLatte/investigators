@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:typed_data';
 import 'package:dio/dio.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_oss_aliyun/flutter_oss_aliyun.dart';
@@ -17,7 +18,7 @@ class AliyunOssUtil {
     return _instance!;
   }
 
-  Future<String?> uploadImage(String filePath) async {
+  Future<String?> uploadImage({String filePath = '', Uint8List? bytes}) async {
     AliOssAccessData? data = await _fetchAccessData();
     if (data == null) {
       return null;
@@ -37,8 +38,13 @@ class AliyunOssUtil {
     );
 
     EasyLoading.show(status: 'uploading...', maskType: EasyLoadingMaskType.black);
-    // 从文件中读取
-    final fileData = (await File(filePath).readAsBytes());
+
+    final Uint8List fileData;
+    if (bytes != null) {
+      fileData = bytes;
+    } else {
+      fileData = (await File(filePath).readAsBytes());
+    }
     String fileName = 'sign_${DateTime.now().millisecondsSinceEpoch ~/ 1000}_${RandomUtil.generateRandomNumber(5)}.png';
     final result = await client!.putObject(fileData, fileName);
     if (result.statusCode != 200) {

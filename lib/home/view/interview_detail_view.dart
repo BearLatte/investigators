@@ -1,10 +1,9 @@
-import 'dart:collection';
-
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:investigators/common/base_title_view.dart';
 import 'package:investigators/home/controller/interview_detail_controller.dart';
+import 'package:investigators/home/view/photo_upload_item.dart';
 import 'package:investigators/utils/global.dart';
 import 'package:investigators/utils/hex_color.dart';
 
@@ -75,8 +74,8 @@ class InterviewDetailView extends StatelessWidget {
                   width: 100,
                   child: Column(children: [
                     _radioItem('Correct', onTap: () => controller.residentialStatusChanged(1), height: 25, isChecked: controller.residentialStatus == 1),
-                    _radioItem('Incorrect', onTap: () => controller.residentialStatusChanged(2), height: 25, isChecked: controller.residentialStatus == 2),
-                    _radioItem('Unverifiable', onTap: () => controller.residentialStatusChanged(3), height: 25, isChecked: controller.residentialStatus == 3)
+                    _radioItem('Incorrect', onTap: () => controller.residentialStatusChanged(0), height: 25, isChecked: controller.residentialStatus == 0),
+                    _radioItem('Unverifiable', onTap: () => controller.residentialStatusChanged(2), height: 25, isChecked: controller.residentialStatus == 2)
                   ]))
             ]),
             _subSection('Company Address'),
@@ -86,8 +85,8 @@ class InterviewDetailView extends StatelessWidget {
                   width: 100,
                   child: Column(children: [
                     _radioItem('Correct', onTap: () => controller.companyStatusChanged(1), height: 25, isChecked: controller.companyAddressStatus == 1),
-                    _radioItem('Incorrect', onTap: () => controller.companyStatusChanged(2), height: 25, isChecked: controller.companyAddressStatus == 2),
-                    _radioItem('Unverifiable', onTap: () => controller.companyStatusChanged(3), height: 25, isChecked: controller.companyAddressStatus == 3)
+                    _radioItem('Incorrect', onTap: () => controller.companyStatusChanged(0), height: 25, isChecked: controller.companyAddressStatus == 0),
+                    _radioItem('Unverifiable', onTap: () => controller.companyStatusChanged(2), height: 25, isChecked: controller.companyAddressStatus == 2)
                   ]))
             ]),
             const SizedBox(height: 10),
@@ -104,9 +103,9 @@ class InterviewDetailView extends StatelessWidget {
                 ),
               )
             ]),
-            _sectionHeader('Other Identification'),
-            _photoUploadItem(
-              controller.identityPhotos,
+            PhotoUploadItem(
+              title: 'Other Identification',
+              images: controller.identityPhotos,
               itemOnTap: (index) => controller.photoItemOnTap(index, type: PhotoUploadType.identity),
               addAction: () => controller.addPhotoAction(PhotoUploadType.identity),
             ),
@@ -115,16 +114,16 @@ class InterviewDetailView extends StatelessWidget {
             _subSection('Monthly Income'),
             _dropdownField(controller.salaryController, hintText: 'Please select your salary!', node: controller.salaryNode, onTap: controller.go2selectSalary),
             if (controller.salaryController.text.trim().isNotEmpty && controller.salaryController.text != 'None' && controller.salaryController.text != 'Nothing')
-              _photoUploadItem(
-                controller.salaryPhotos,
+              PhotoUploadItem(
+                images: controller.salaryPhotos,
                 addAction: () => controller.addPhotoAction(PhotoUploadType.salary),
                 itemOnTap: (index) => controller.photoItemOnTap(index, type: PhotoUploadType.salary),
               ),
             _subSection('Money Flows(nearly 1 month)'),
             _dropdownField(controller.moneyFlowController, hintText: 'Please select your money flow!', node: controller.moneyFlowNode, onTap: controller.go2selectMoneyFlow),
             if (controller.moneyFlowController.text.trim().isNotEmpty && controller.moneyFlowController.text != 'None' && controller.moneyFlowController.text != 'Nothing')
-              _photoUploadItem(
-                controller.moneyFlowPhotos,
+              PhotoUploadItem(
+                images: controller.moneyFlowPhotos,
                 addAction: () => controller.addPhotoAction(PhotoUploadType.moneyFlows),
                 itemOnTap: (index) => controller.photoItemOnTap(index, type: PhotoUploadType.moneyFlows),
               ),
@@ -147,10 +146,10 @@ class InterviewDetailView extends StatelessWidget {
             if (controller.investmentController.text.trim().isNotEmpty && controller.investmentController.text != 'None' && controller.investmentController.text != 'Nothing')
               _subSection('Voucher Amount'),
             if (controller.investmentController.text.trim().isNotEmpty && controller.investmentController.text != 'None' && controller.investmentController.text != 'Nothing')
-              _itemTextField(controller.investmentAmountController, isEnable: true),
+              _itemTextField(controller.investmentAmountController, isEnable: true, keyboardType: TextInputType.number),
             if (controller.investmentController.text.trim().isNotEmpty && controller.investmentController.text != 'None' && controller.investmentController.text != 'Nothing')
-              _photoUploadItem(
-                controller.investmentPhotos,
+              PhotoUploadItem(
+                images: controller.investmentPhotos,
                 addAction: () => controller.addPhotoAction(PhotoUploadType.invest),
                 itemOnTap: (index) => controller.photoItemOnTap(index, type: PhotoUploadType.invest),
               ),
@@ -163,8 +162,8 @@ class InterviewDetailView extends StatelessWidget {
               ])
             ]),
             if (controller.isBadge == true)
-              _photoUploadItem(
-                controller.incumbencyPhotos,
+              PhotoUploadItem(
+                images: controller.incumbencyPhotos,
                 itemOnTap: (index) => controller.photoItemOnTap(index, type: PhotoUploadType.incumbency),
                 addAction: () => controller.addPhotoAction(PhotoUploadType.incumbency),
               ),
@@ -279,14 +278,17 @@ class InterviewDetailView extends StatelessWidget {
             const SizedBox(height: 10),
             _subSection('Other Supporting Materials'),
             _itemTextField(controller.otherSupportingController, isEnable: true),
-            _photoUploadItem(
-              controller.otherAssetPhotos,
+            PhotoUploadItem(
+              images: controller.otherAssetPhotos,
               addAction: () => controller.addPhotoAction(PhotoUploadType.other),
               itemOnTap: (index) => controller.photoItemOnTap(index, type: PhotoUploadType.other),
             ),
             const SizedBox(height: 20),
             _sectionHeader('Account Payee'),
-            ...List.generate(controller.accountList.length, (index) => _accountItem(controller.accountList[index])),
+            ...List.generate(
+                controller.accountList.length,
+                (index) => _accountItem(controller.accountList[index],
+                    tapAction: () => controller.selectAccount(index), isSelected: controller.selectedWithdrawAccount == controller.accountList[index])),
             const SizedBox(height: 20),
             InkWell(
                 onTap: controller.refuseLoanStatusChanged,
@@ -310,7 +312,7 @@ class InterviewDetailView extends StatelessWidget {
                 children: [
                   Expanded(
                     child: InkWell(
-                      onTap: controller.interviewAction,
+                      onTap: () => controller.generateParams(SubmitType.interview),
                       child: Container(
                         padding: const EdgeInsets.symmetric(vertical: 10),
                         alignment: Alignment.center,
@@ -322,21 +324,22 @@ class InterviewDetailView extends StatelessWidget {
                       ),
                     ),
                   ),
-                  const SizedBox(width: 20),
-                  Expanded(
-                    child: InkWell(
-                      onTap: controller.reconsiderationAction,
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(vertical: 10),
-                        alignment: Alignment.center,
-                        decoration: BoxDecoration(color: Global.instance.themeColor, borderRadius: BorderRadius.circular(8)),
-                        child: const Text(
-                          'Reconsideration',
-                          style: TextStyle(color: Colors.white, fontSize: 15, fontWeight: FontWeight.bold),
+                  if (!controller.isRefuseLoan) const SizedBox(width: 20),
+                  if (!controller.isRefuseLoan)
+                    Expanded(
+                      child: InkWell(
+                        onTap: () => controller.generateParams(SubmitType.reconsideration),
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(vertical: 10),
+                          alignment: Alignment.center,
+                          decoration: BoxDecoration(color: Global.instance.themeColor, borderRadius: BorderRadius.circular(8)),
+                          child: const Text(
+                            'Reconsideration',
+                            style: TextStyle(color: Colors.white, fontSize: 15, fontWeight: FontWeight.bold),
+                          ),
                         ),
                       ),
-                    ),
-                  )
+                    )
                 ],
               ),
             )
@@ -454,11 +457,12 @@ class InterviewDetailView extends StatelessWidget {
     return Text(text, style: TextStyle(color: Global.instance.textPrimaryColor, fontSize: 13));
   }
 
-  Widget _itemTextField(TextEditingController controller, {bool isEnable = false, bool isMultiLine = false, int? maxLines}) {
+  Widget _itemTextField(TextEditingController controller, {bool isEnable = false, bool isMultiLine = false, int? maxLines, TextInputType keyboardType = TextInputType.text}) {
     return TextField(
       controller: controller,
       style: TextStyle(color: Global.instance.textPrimaryColor, fontSize: 13),
       enabled: isEnable,
+      keyboardType: keyboardType,
       maxLines: isMultiLine ? maxLines : 1,
       decoration: InputDecoration(
         isCollapsed: true,
@@ -486,49 +490,6 @@ class InterviewDetailView extends StatelessWidget {
                 Text(title, style: TextStyle(color: isChecked ? Global.instance.themeColor : Global.instance.textPrimaryColor))
               ],
             )));
-  }
-
-  Widget _photoUploadItem(List<String> images, {void Function(int index)? itemOnTap, void Function()? addAction}) {
-    double itemWidth = (MediaQuery.of(Get.context!).size.width - 40) / 3;
-    double itemHeight = itemWidth * 0.7;
-    return Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
-      _subSection('Photograph'),
-      Wrap(
-        spacing: 8,
-        runSpacing: 8,
-        children: [
-          ...List.generate(
-            images.length,
-            (index) => InkWell(
-              onTap: () => itemOnTap!(index),
-              child: Container(
-                width: itemWidth,
-                height: itemHeight,
-                clipBehavior: Clip.hardEdge,
-                decoration: BoxDecoration(borderRadius: BorderRadius.circular(5)),
-                child: CachedNetworkImage(
-                  imageUrl: images[index],
-                  placeholder: (context, text) => Icon(Icons.image, size: 70, color: Global.instance.themeColor),
-                  fit: BoxFit.cover,
-                ),
-              ),
-            ),
-          ),
-          InkWell(
-            onTap: addAction,
-            child: Container(
-                width: itemWidth,
-                height: itemHeight,
-                decoration: BoxDecoration(
-                  color: HexColor('#F1FAFF'),
-                  border: Border.all(color: Global.instance.textPrimaryColor, width: 1.0),
-                  borderRadius: BorderRadius.circular(5),
-                ),
-                child: Icon(Icons.add, size: 40, color: Global.instance.textPrimaryColor)),
-          )
-        ],
-      )
-    ]);
   }
 
   Widget _dropdownField(TextEditingController controller, {FocusNode? node, String? hintText, void Function()? onTap}) {
@@ -572,7 +533,7 @@ class InterviewDetailView extends StatelessWidget {
       _subSection('Full Address'),
       _itemTextField(fullAddressController, isEnable: true),
       if (estimatedAreaController != null) _subSection('Estimated Area'),
-      if (estimatedAreaController != null) _itemTextField(estimatedAreaController, isEnable: true),
+      if (estimatedAreaController != null) _itemTextField(estimatedAreaController, isEnable: true, keyboardType: TextInputType.number),
       if (timeOfPurchaseController != null) _subSection('Purchase Time'),
       if (timeOfPurchaseController != null)
         _dropdownField(
@@ -582,10 +543,10 @@ class InterviewDetailView extends StatelessWidget {
           node: purchaseTimeNode,
         ),
       if (priceController != null) _subSection('Purchase Price'),
-      if (priceController != null) _itemTextField(priceController, isEnable: true),
+      if (priceController != null) _itemTextField(priceController, isEnable: true, keyboardType: TextInputType.number),
       _subSection('Market Value'),
-      _itemTextField(marketValueController, isEnable: true),
-      _photoUploadItem(photos, addAction: photoAddAction, itemOnTap: photoItemOnTap)
+      _itemTextField(marketValueController, isEnable: true, keyboardType: TextInputType.number),
+      PhotoUploadItem(images: photos, addAction: photoAddAction, itemOnTap: photoItemOnTap)
     ]);
   }
 
@@ -598,12 +559,12 @@ class InterviewDetailView extends StatelessWidget {
       void Function()? addAction}) {
     return Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
       _subSection('Amount'),
-      _itemTextField(amountController, isEnable: true),
+      _itemTextField(amountController, isEnable: true, keyboardType: TextInputType.number),
       _subSection('Estimated Unit Price'),
-      _itemTextField(priceController, isEnable: true),
+      _itemTextField(priceController, isEnable: true, keyboardType: TextInputType.number),
       _subSection('Total Market Value'),
-      _itemTextField(totalValueController, isEnable: true),
-      _photoUploadItem(photos, itemOnTap: photoItemOnTap, addAction: addAction),
+      _itemTextField(totalValueController, isEnable: true, keyboardType: TextInputType.number),
+      PhotoUploadItem(images: photos, itemOnTap: photoItemOnTap, addAction: addAction),
     ]);
   }
 
@@ -619,30 +580,33 @@ class InterviewDetailView extends StatelessWidget {
   }) {
     return Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
       _subSection('Purchase Price'),
-      _itemTextField(purchasePriceController, isEnable: true),
+      _itemTextField(purchasePriceController, isEnable: true, keyboardType: TextInputType.number),
       _subSection('Purchase Date'),
       _dropdownField(purchaseDateController, hintText: "Please select your vehicle's purchase date!", onTap: dateSelectOnTap, node: node),
       _subSection('Market Value'),
-      _itemTextField(marketValueController, isEnable: true),
-      _photoUploadItem(photos, addAction: addAction, itemOnTap: itemOnTap)
+      _itemTextField(marketValueController, isEnable: true, keyboardType: TextInputType.number),
+      PhotoUploadItem(images: photos, addAction: addAction, itemOnTap: itemOnTap)
     ]);
   }
 
-  Widget _accountItem(InterviewDetailInfoInterviewInfoAccount account) {
-    return Container(
-      margin: const EdgeInsets.only(top: 5),
-      padding: const EdgeInsets.only(right: 10),
-      decoration: BoxDecoration(color: HexColor('#F1FAFF'), borderRadius: BorderRadius.circular(8), border: Border.all(color: HexColor('#8290A7'))),
-      child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-        Container(
-          width: 65,
-          padding: const EdgeInsets.symmetric(vertical: 10),
-          alignment: Alignment.center,
-          decoration: BoxDecoration(color: Global.instance.themeColor, borderRadius: BorderRadius.circular(5)),
-          child: Text(account.channelName, style: const TextStyle(color: Colors.white, fontSize: 15, fontWeight: FontWeight.bold)),
-        ),
-        Text(account.accountNo, style: TextStyle(color: Global.instance.themeColor, fontSize: 15, fontWeight: FontWeight.bold))
-      ]),
-    );
+  Widget _accountItem(InterviewDetailInfoInterviewInfoAccount account, {required void Function() tapAction, bool? isSelected}) {
+    return InkWell(
+        onTap: tapAction,
+        child: Container(
+          margin: const EdgeInsets.only(top: 5),
+          padding: const EdgeInsets.only(right: 10),
+          decoration: BoxDecoration(
+              color: isSelected == true ? Global.instance.themeColor : HexColor('#F1FAFF'), borderRadius: BorderRadius.circular(8), border: Border.all(color: HexColor('#8290A7'))),
+          child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+            Container(
+              width: 65,
+              padding: const EdgeInsets.symmetric(vertical: 10),
+              alignment: Alignment.center,
+              decoration: BoxDecoration(color: isSelected == true ? HexColor('#F1FAFF') : Global.instance.themeColor, borderRadius: BorderRadius.circular(5)),
+              child: Text(account.channelName, style: TextStyle(color: isSelected == true ? Global.instance.themeColor : Colors.white, fontSize: 15, fontWeight: FontWeight.bold)),
+            ),
+            Text(account.accountNo, style: TextStyle(color: isSelected == true ? Colors.white : Global.instance.themeColor, fontSize: 15, fontWeight: FontWeight.bold))
+          ]),
+        ));
   }
 }

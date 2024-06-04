@@ -1,7 +1,5 @@
 import 'dart:convert';
-
 import 'package:camera/camera.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
@@ -17,7 +15,6 @@ import 'package:investigators/utils/aliyun_oss_util.dart';
 import 'package:investigators/utils/global.dart';
 import 'package:investigators/utils/method_util.dart';
 import 'package:scroll_datetime_picker/scroll_datetime_picker.dart';
-
 import '../../utils/hex_color.dart';
 
 enum PhotoUploadType { identity, salary, moneyFlows, invest, incumbency, land, residential, business, livestock, motorVehicles, other }
@@ -26,9 +23,12 @@ enum SelectionDateType { house, business, vehicle, voucherValidity }
 
 enum LocationOnTapType { land, house, business }
 
+enum SubmitType { interview, reconsideration }
+
 class InterviewDetailController extends GetxController with GetTickerProviderStateMixin {
   late InterviewDetailInfo curDetailInfo;
   late TabController tabController;
+
   List<Tab> tabs = const [Tab(text: 'Interview Information'), Tab(text: 'User Information')];
 
   // name 输入控制器
@@ -238,22 +238,34 @@ class InterviewDetailController extends GetxController with GetTickerProviderSta
   // 收款账户列表
   List<InterviewDetailInfoInterviewInfoAccount> accountList = [];
 
+  // 当前选中的收款账户
+  InterviewDetailInfoInterviewInfoAccount? selectedWithdrawAccount;
+
   @override
   void onInit() async {
     super.onInit();
 
     tabController = TabController(length: tabs.length, vsync: this);
+    cameras = await availableCameras();
+
+    await fetchAllAssetOptions();
 
     String? clientId = Get.arguments['clientId'];
     String? signRecordId = Get.arguments['signRecordId'];
-
+    int type = Get.arguments['type'];
     if (MethodUtil.isNullOrEmpty(clientId) || MethodUtil.isNullOrEmpty(signRecordId)) {
       return;
     }
+
     _currentSignRecordId = signRecordId!;
-    await fetchAllAssetOptions();
-    await fetchInterViewDetail(signRecordId, clientId!);
-    cameras = await availableCameras();
+
+    if (type == 0) {
+      await fetchInterViewDetail(signRecordId, clientId!);
+    }
+
+    if(type == 1) {
+
+    }
 
     fetchCache();
   }
@@ -555,6 +567,7 @@ class InterviewDetailController extends GetxController with GetTickerProviderSta
 
   void refuseLoanStatusChanged() {
     isRefuseLoan = !isRefuseLoan;
+    if (!isRefuseLoan) refuseLoanReasonController.clear();
     update();
   }
 
@@ -571,7 +584,7 @@ class InterviewDetailController extends GetxController with GetTickerProviderSta
     }
 
     // 上传图片
-    String? uploadedImgName = await AliyunOssUtil.instance.uploadImage(imgPath);
+    String? uploadedImgName = await AliyunOssUtil.instance.uploadImage(filePath: imgPath);
     if (uploadedImgName == null) return;
 
     switch (type) {
@@ -635,6 +648,11 @@ class InterviewDetailController extends GetxController with GetTickerProviderSta
     _curInvestment = _investmentOptions[index];
     investmentController.text = _curInvestment!.cateName;
     investmentNode.unfocus();
+    update();
+  }
+
+  void selectAccount(int index) {
+    selectedWithdrawAccount = accountList[index];
     update();
   }
 
@@ -832,12 +850,133 @@ class InterviewDetailController extends GetxController with GetTickerProviderSta
     Get.back(result: model);
   }
 
-  void interviewAction() {
-    debugPrint('DEBUG: 保存面签内容');
+  void generateParams(SubmitType type) {
+    if (MethodUtil.isNullOrEmpty(isNameCorrect)) {
+      return CommonSnackBar.showSnackBar('Please check name whether correct!');
+    }
+
+    if (isNameCorrect == false && nameController.text.trim().isEmpty) {
+      return CommonSnackBar.showSnackBar('Please enter correct name!');
+    }
+
+    if (MethodUtil.isNullOrEmpty(residentialStatus)) {
+      return CommonSnackBar.showSnackBar('Please check residential address whether correct!');
+    }
+
+    if (MethodUtil.isNullOrEmpty(companyAddressStatus)) {
+      return CommonSnackBar.showSnackBar('Please check company address whether correct!');
+    }
+
+    if (MethodUtil.isNullOrEmpty(isInPerson)) {
+      return CommonSnackBar.showSnackBar('Whether in person item cannot be empty!');
+    }
+
+    if (MethodUtil.isNullOrEmpty(selectedWithdrawAccount)) {
+      return CommonSnackBar.showSnackBar('Please select withdraw account!');
+    }
+
+    Map<String, dynamic> params = {};
+    params['sign_record_id'] = _currentSignRecordId;
+    params['withdraw_type'] = selectedWithdrawAccount!.withdrawType;
+    params['withdraw_relation'] = selectedWithdrawAccount!.withdrawRelation;
+
+    Map<String, dynamic> identity = {};
+    identity['name_correct'] = isNameCorrect == true ? '1' : '0';
+    identity['client_name'] = nameController.text;
+    identity['resident_address_correct'] = residentialStatus == 0 ? '0' : (residentialStatus == 1 ? '1' : '2');
+    identity['company_address_correct'] = companyAddressStatus == 0 ? '0' : (companyAddressStatus == 1 ? '1' : '2');
+    identity['is_personal_correct'] = isInPerson == true ? '1' : '0';
+    identity['other_info'] = MethodUtil.configImageNames(identityPhotos);
+    params['identity'] = jsonEncode(identity);
+
+    Map<String, dynamic> salary = {};
+    salary['monthly_income'] = _curSalary?.cateId ?? '';
+    salary['monthly_income_proof'] = MethodUtil.configImageNames(salaryPhotos);
+    salary['transaction_flow'] = _curMoneyFlow?.cateId ?? '';
+    salary['transaction_flow_proof'] = MethodUtil.configImageNames(moneyFlowPhotos);
+    salary['investment_type'] = _curInvestment?.cateId ?? '';
+    salary['investment_expired'] = investmentDateOfDeadlineController.text;
+    salary['investment_amount'] = investmentAmountController.text;
+    salary['investment_proof'] = MethodUtil.configImageNames(investmentPhotos);
+    salary['badge_exist'] = isBadge == true ? '1' : '0';
+    salary['badge_proof'] = MethodUtil.configImageNames(incumbencyPhotos);
+    params['salary'] = jsonEncode(salary);
+
+    Map<String, dynamic> asset = {};
+    asset['land_ownership'] = isHoldLand == true ? '1' : '0';
+    asset['land_proof'] = MethodUtil.configImageNames(landPhotos);
+    Map<String, dynamic> landContent = {};
+    landContent['address_code'] = curLandCode ?? '';
+    landContent['detail_address'] = landFullAddressController.text;
+    landContent['area'] = landEstimatedController.text;
+    landContent['estimated_value'] = landMarketValueController.text;
+    asset['land_content'] = jsonEncode(landContent);
+    asset['house_ownership'] = isHosing == true ? '1' : '0';
+    asset['house_proof'] = MethodUtil.configImageNames(housePhotos);
+    Map<String, dynamic> houseContent = {};
+    houseContent['address_code'] = curHouseCode ?? '';
+    houseContent['detail_address'] = houseFullAddressController.text;
+    houseContent['purchase_time'] = housePurchaseTimeController.text;
+    houseContent['purchase_price'] = housePriceController.text;
+    houseContent['estimated_value'] = houseMarketValueController.text;
+    asset['house_content'] = jsonEncode(houseContent);
+    asset['shop_assets'] = isBusiness == true ? '1' : '0';
+    asset['shop_proof'] = MethodUtil.configImageNames(businessPhotos);
+    Map<String, dynamic> shopContent = {};
+    shopContent['address_code'] = curBusinessCode ?? '';
+    shopContent['detail_address'] = businessFullAddressController.text;
+    shopContent['purchase_time'] = businessPurchaseTimeController.text;
+    shopContent['purchase_price'] = businessPriceController.text;
+    shopContent['estimated_value'] = businessMarketValueController.text;
+    asset['shop_content'] = jsonEncode(shopContent);
+    asset['livestock_assets'] = _curLivestock == null ? '0' : '1';
+    asset['livestock_cate'] = _curLivestock?.cateId ?? '';
+    asset['livestock_proof'] = MethodUtil.configImageNames(livestockPhotos);
+    Map<String, dynamic> livestockContent = {};
+    livestockContent['number'] = livestockAmountController.text;
+    livestockContent['estimated_value_total'] = livestockTotalValueController.text;
+    livestockContent['estimated_value_per'] = livestockUnitPriceController.text;
+    asset['livestock_content'] = jsonEncode(livestockContent);
+    asset['vehicle'] = _curVehicle == null ? '0' : '1';
+    asset['vehicle_cate'] = _curVehicle?.cateId ?? '';
+    asset['vehicle_proof'] = MethodUtil.configImageNames(vehiclePhotos);
+    Map<String, dynamic> vehicleContent = {};
+    vehicleContent['purchase_price'] = vehiclePurchasePriceController.text;
+    vehicleContent['purchase_time'] = vehiclePurchaseDateController.text;
+    vehicleContent['estimated_value'] = vehicleMarketValueController.text;
+    asset['vehicle_content'] = jsonEncode(vehicleContent);
+    asset['other_assets'] = otherSupportingController.text.trim().isEmpty ? '0' : '1';
+    asset['other_assets_proof'] = MethodUtil.configImageNames(otherAssetPhotos);
+    params['asset'] = jsonEncode(asset);
+    switch (type) {
+      case SubmitType.interview:
+        if (isRefuseLoan) {
+          Map<String, dynamic> addition = {};
+          addition['addition_status'] = isRefuseLoan ? '1' : '';
+          addition['content'] = refuseLoanReasonController.text;
+          params['addition'] = jsonEncode(addition);
+        }
+        _interviewAction(params);
+      case SubmitType.reconsideration:
+        _reconsiderationAction(params);
+    }
   }
 
-  void reconsiderationAction() {
-    debugPrint('DEBUG: 提交复议');
+  void _interviewAction(Map<String, dynamic> params) {
+    Get.toNamed(ApplicationRoutes.contract, arguments: {
+      'detail_params': params,
+      'pid': curDetailInfo.clientInfo.credit.pid,
+      'rid': curDetailInfo.clientInfo.credit.rid,
+      'money': curDetailInfo.clientInfo.credit.amount,
+      'token': curDetailInfo.clientInfo.credit.token,
+    });
+  }
+
+  void _reconsiderationAction(Map<String, dynamic> params) {
+    Get.toNamed(
+      ApplicationRoutes.reconsideration,
+      arguments: {'params': params, 'camera': cameras.first},
+    );
   }
 
   void photoItemOnTap(int index, {required PhotoUploadType type}) {

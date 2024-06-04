@@ -6,6 +6,7 @@ import 'package:url_launcher/url_launcher_string.dart';
 
 import '../../common/common_snack_bar.dart';
 import '../../network_service/index.dart';
+import '../../router/index.dart';
 
 class ReturnedController extends GetxController {
   int currentPage = 0;
@@ -45,15 +46,17 @@ class ReturnedController extends GetxController {
   void callUpAction(String phone) async {
     final phoneNumber = 'tel:$phone';
     if (await canLaunchUrlString(phoneNumber)) {
-    await launchUrlString(phoneNumber);
+      await launchUrlString(phoneNumber);
     } else {
-    CommonSnackBar.showSnackBar('This device cannot be call up phone.');
+      CommonSnackBar.showSnackBar('This device cannot be call up phone.');
     }
   }
 
-  void modifyAction(ReturnedListData data) {
-    debugPrint('DEBUG: 修改信息');
+  void modifyAction(ReturnedListData data) async {
+    var result = await Get.toNamed(ApplicationRoutes.interviewDetail, arguments: {
+      'signRecordId': data.signRecordId,
+      'clientId': data.clientId,
+      'type': 1,
+    });
   }
-
-
 }
