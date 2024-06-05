@@ -15,7 +15,7 @@ class ProfileController extends GetxController {
 
   void _loadUserInfo() async {
     user = await NetworkService.fetchUserInfo();
-    Global.instance.prefs.setString(Global.CURRENT_PHONE_NUMBER, user?.telephone);
+    if (user != null) Global.instance.prefs.setString(Global.CURRENT_PHONE_NUMBER, user?.telephone);
     update();
   }
 

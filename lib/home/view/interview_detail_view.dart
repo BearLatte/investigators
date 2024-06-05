@@ -36,7 +36,7 @@ class InterviewDetailView extends StatelessWidget {
                     Expanded(
                       child: TabBarView(
                         controller: controller.tabController,
-                        children: [_interviewInformationView(), _userInformationView()],
+                        children: [_interviewInformationView(), _userInformationView(controller.pageType)],
                       ),
                     )
                   ])),
@@ -325,7 +325,7 @@ class InterviewDetailView extends StatelessWidget {
                     ),
                   ),
                   if (!controller.isRefuseLoan) const SizedBox(width: 20),
-                  if (!controller.isRefuseLoan)
+                  if (!controller.isRefuseLoan && controller.pageType == 0)
                     Expanded(
                       child: InkWell(
                         onTap: () => controller.generateParams(SubmitType.reconsideration),
@@ -349,97 +349,101 @@ class InterviewDetailView extends StatelessWidget {
     );
   }
 
-  Widget _userInformationView() {
-    return SingleChildScrollView(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 12),
-      child: GetBuilder<InterviewDetailController>(
-          builder: (controller) => Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 15),
-                    decoration: BoxDecoration(color: Global.instance.themeColor, borderRadius: BorderRadius.circular(8)),
-                    child: Column(children: [
-                      Row(
-                        crossAxisAlignment: CrossAxisAlignment.end,
-                        children: [
-                          const Text('Credit Limit    ', style: TextStyle(color: Colors.white, fontSize: 15, fontWeight: FontWeight.bold)),
-                          Text('₱ ${controller.curDetailInfo.clientInfo.credit.amount}', style: const TextStyle(color: Colors.white, fontSize: 25, fontWeight: FontWeight.bold))
-                        ],
-                      ),
-                      const SizedBox(height: 20),
-                      Row(children: [
-                        const Text('Credit Term    ', style: TextStyle(color: Colors.white, fontSize: 15, fontWeight: FontWeight.bold)),
-                        Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 8),
-                            decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(100)),
-                            child: Text('${controller.curDetailInfo.clientInfo.credit.loanDays} days/issue, ${controller.curDetailInfo.clientInfo.credit.insNum} issue in total',
-                                style: TextStyle(color: Global.instance.themeColor, fontSize: 13, fontWeight: FontWeight.bold))),
+  Widget _userInformationView(int type) {
+    if (type == 0) {
+      return SingleChildScrollView(
+        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 12),
+        child: GetBuilder<InterviewDetailController>(
+            builder: (controller) => Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 15),
+                      decoration: BoxDecoration(color: Global.instance.themeColor, borderRadius: BorderRadius.circular(8)),
+                      child: Column(children: [
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          children: [
+                            const Text('Credit Limit    ', style: TextStyle(color: Colors.white, fontSize: 15, fontWeight: FontWeight.bold)),
+                            Text('₱ ${controller.curDetailInfo.clientInfo.credit.amount}', style: const TextStyle(color: Colors.white, fontSize: 25, fontWeight: FontWeight.bold))
+                          ],
+                        ),
+                        const SizedBox(height: 20),
+                        Row(children: [
+                          const Text('Credit Term    ', style: TextStyle(color: Colors.white, fontSize: 15, fontWeight: FontWeight.bold)),
+                          Container(
+                              padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 8),
+                              decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(100)),
+                              child: Text('${controller.curDetailInfo.clientInfo.credit.loanDays} days/issue, ${controller.curDetailInfo.clientInfo.credit.insNum} issue in total',
+                                  style: TextStyle(color: Global.instance.themeColor, fontSize: 13, fontWeight: FontWeight.bold))),
+                        ]),
                       ]),
+                    ),
+                    const SizedBox(height: 10),
+                    _sectionHeader('Photos'),
+                    Row(children: [
+                      Expanded(
+                        child: SizedBox(
+                          height: 145,
+                          child: Column(children: [
+                            Expanded(
+                                child: CachedNetworkImage(
+                                    imageUrl: controller.curDetailInfo.clientInfo.photos.identifyPhoto,
+                                    placeholder: (context, xxx) => const Icon(Icons.image),
+                                    height: double.infinity,
+                                    width: double.infinity,
+                                    fit: BoxFit.cover)),
+                            Text('ID Photo Type: ${controller.curDetailInfo.clientInfo.photos.identityType}', style: TextStyle(color: Global.instance.textPrimaryColor))
+                          ]),
+                        ),
+                      ),
+                      const SizedBox(width: 10),
+                      Expanded(
+                        child: SizedBox(
+                          height: 145,
+                          child: Column(children: [
+                            Expanded(
+                                child: CachedNetworkImage(
+                                    imageUrl: controller.curDetailInfo.clientInfo.photos.activityPhoto,
+                                    placeholder: (context, xxx) => const Icon(Icons.image),
+                                    height: double.infinity,
+                                    width: double.infinity,
+                                    fit: BoxFit.cover)),
+                            Text('Facial Image', style: TextStyle(color: Global.instance.textPrimaryColor))
+                          ]),
+                        ),
+                      ),
                     ]),
-                  ),
-                  const SizedBox(height: 10),
-                  _sectionHeader('Photos'),
-                  Row(children: [
-                    Expanded(
-                      child: SizedBox(
-                        height: 145,
-                        child: Column(children: [
-                          Expanded(
-                              child: CachedNetworkImage(
-                                  imageUrl: controller.curDetailInfo.clientInfo.photos.identifyPhoto,
-                                  placeholder: (context, xxx) => const Icon(Icons.image),
-                                  height: double.infinity,
-                                  width: double.infinity,
-                                  fit: BoxFit.cover)),
-                          Text('ID Photo Type: ${controller.curDetailInfo.clientInfo.photos.identityType}', style: TextStyle(color: Global.instance.textPrimaryColor))
-                        ]),
-                      ),
-                    ),
-                    const SizedBox(width: 10),
-                    Expanded(
-                      child: SizedBox(
-                        height: 145,
-                        child: Column(children: [
-                          Expanded(
-                              child: CachedNetworkImage(
-                                  imageUrl: controller.curDetailInfo.clientInfo.photos.activityPhoto,
-                                  placeholder: (context, xxx) => const Icon(Icons.image),
-                                  height: double.infinity,
-                                  width: double.infinity,
-                                  fit: BoxFit.cover)),
-                          Text('Facial Image', style: TextStyle(color: Global.instance.textPrimaryColor))
-                        ]),
-                      ),
-                    ),
-                  ]),
-                  const SizedBox(height: 10),
-                  _sectionHeader('Basic Information'),
-                  const SizedBox(height: 10),
-                  _item('Name: ${controller.curDetailInfo.clientInfo.baseInfo.name}'),
-                  _item('Gender: ${controller.curDetailInfo.clientInfo.baseInfo.gender}'),
-                  _item('Birth Date: ${controller.curDetailInfo.clientInfo.baseInfo.birthday}'),
-                  _item('ID Number: ${controller.curDetailInfo.clientInfo.baseInfo.idCardNumber}'),
-                  _item('Degree: ${controller.curDetailInfo.clientInfo.baseInfo.educationBackground}'),
-                  _item('Marital Status: ${controller.curDetailInfo.clientInfo.baseInfo.maritalStatus}'),
-                  _item('Number of Children: ${controller.curDetailInfo.clientInfo.baseInfo.numberOfChildren}'),
-                  _item('Uses of Loan: ${controller.curDetailInfo.clientInfo.baseInfo.usageOfLoan}'),
-                  _item('Industry: ${controller.curDetailInfo.clientInfo.baseInfo.industryCategory}'),
-                  _item('Salary: ${controller.curDetailInfo.clientInfo.baseInfo.monthlyIncome}'),
-                  _item('Work Experience: ${controller.curDetailInfo.clientInfo.baseInfo.workingExperience}'),
-                  _item('Payday: ${controller.curDetailInfo.clientInfo.baseInfo.payday}'),
-                  _item('Residential Address: ${controller.residentialAddress}'),
-                  _item('Residential Ownership: ${controller.curDetailInfo.clientInfo.baseInfo.residentialOwnership}'),
-                  _item('Company Name: ${controller.curDetailInfo.clientInfo.baseInfo.companyName}'),
-                  _item('Company Address: ${controller.companyAddress}'),
-                  _item('Facebook Account: ${controller.curDetailInfo.clientInfo.baseInfo.facebookLink}'),
-                  _item('Mobile Phone Number: ${controller.curDetailInfo.clientInfo.baseInfo.clientTel}'),
-                  _item('Alternate Phone Number: ${controller.curDetailInfo.clientInfo.baseInfo.alterPhone}'),
-                  _item('Viber: ${controller.curDetailInfo.clientInfo.baseInfo.viberPhone}'),
-                  _item('Email Address: ${controller.curDetailInfo.clientInfo.baseInfo.email}'),
-                ],
-              )),
-    );
+                    const SizedBox(height: 10),
+                    _sectionHeader('Basic Information'),
+                    const SizedBox(height: 10),
+                    _item('Name: ${controller.curDetailInfo.clientInfo.baseInfo.name}'),
+                    _item('Gender: ${controller.curDetailInfo.clientInfo.baseInfo.gender}'),
+                    _item('Birth Date: ${controller.curDetailInfo.clientInfo.baseInfo.birthday}'),
+                    _item('ID Number: ${controller.curDetailInfo.clientInfo.baseInfo.idCardNumber}'),
+                    _item('Degree: ${controller.curDetailInfo.clientInfo.baseInfo.educationBackground}'),
+                    _item('Marital Status: ${controller.curDetailInfo.clientInfo.baseInfo.maritalStatus}'),
+                    _item('Number of Children: ${controller.curDetailInfo.clientInfo.baseInfo.numberOfChildren}'),
+                    _item('Uses of Loan: ${controller.curDetailInfo.clientInfo.baseInfo.usageOfLoan}'),
+                    _item('Industry: ${controller.curDetailInfo.clientInfo.baseInfo.industryCategory}'),
+                    _item('Salary: ${controller.curDetailInfo.clientInfo.baseInfo.monthlyIncome}'),
+                    _item('Work Experience: ${controller.curDetailInfo.clientInfo.baseInfo.workingExperience}'),
+                    _item('Payday: ${controller.curDetailInfo.clientInfo.baseInfo.payday}'),
+                    _item('Residential Address: ${controller.residentialAddress}'),
+                    _item('Residential Ownership: ${controller.curDetailInfo.clientInfo.baseInfo.residentialOwnership}'),
+                    _item('Company Name: ${controller.curDetailInfo.clientInfo.baseInfo.companyName}'),
+                    _item('Company Address: ${controller.companyAddress}'),
+                    _item('Facebook Account: ${controller.curDetailInfo.clientInfo.baseInfo.facebookLink}'),
+                    _item('Mobile Phone Number: ${controller.curDetailInfo.clientInfo.baseInfo.clientTel}'),
+                    _item('Alternate Phone Number: ${controller.curDetailInfo.clientInfo.baseInfo.alterPhone}'),
+                    _item('Viber: ${controller.curDetailInfo.clientInfo.baseInfo.viberPhone}'),
+                    _item('Email Address: ${controller.curDetailInfo.clientInfo.baseInfo.email}'),
+                  ],
+                )),
+      );
+    } else {
+      return Column(children: []);
+    }
   }
 
   Widget _sectionHeader(String title) {

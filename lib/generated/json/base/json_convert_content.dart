@@ -12,6 +12,7 @@ import 'package:investigators/models/asset_options.dart';
 import 'package:investigators/models/interview_cache_model.dart';
 import 'package:investigators/models/interview_detail_info.dart';
 import 'package:investigators/models/interview_pending_list.dart';
+import 'package:investigators/models/last_interview_info.dart';
 import 'package:investigators/models/returned_list.dart';
 import 'package:investigators/models/sign_history_model.dart';
 import 'package:investigators/models/subcategory.dart';
@@ -268,6 +269,33 @@ class JsonConvert {
     if (<InterviewPendingListDataIdentityInfo>[] is M) {
       return data.map<InterviewPendingListDataIdentityInfo>((Map<String, dynamic> e) => InterviewPendingListDataIdentityInfo.fromJson(e)).toList() as M;
     }
+    if (<LastInterviewInfo>[] is M) {
+      return data.map<LastInterviewInfo>((Map<String, dynamic> e) => LastInterviewInfo.fromJson(e)).toList() as M;
+    }
+    if (<LastInterviewInfoIdentity>[] is M) {
+      return data.map<LastInterviewInfoIdentity>((Map<String, dynamic> e) => LastInterviewInfoIdentity.fromJson(e)).toList() as M;
+    }
+    if (<LastInterviewInfoSalary>[] is M) {
+      return data.map<LastInterviewInfoSalary>((Map<String, dynamic> e) => LastInterviewInfoSalary.fromJson(e)).toList() as M;
+    }
+    if (<LastInterviewInfoAsset>[] is M) {
+      return data.map<LastInterviewInfoAsset>((Map<String, dynamic> e) => LastInterviewInfoAsset.fromJson(e)).toList() as M;
+    }
+    if (<LastInterviewInfoAssetLandContent>[] is M) {
+      return data.map<LastInterviewInfoAssetLandContent>((Map<String, dynamic> e) => LastInterviewInfoAssetLandContent.fromJson(e)).toList() as M;
+    }
+    if (<LastInterviewInfoAssetHouseContent>[] is M) {
+      return data.map<LastInterviewInfoAssetHouseContent>((Map<String, dynamic> e) => LastInterviewInfoAssetHouseContent.fromJson(e)).toList() as M;
+    }
+    if (<LastInterviewInfoAssetShopContent>[] is M) {
+      return data.map<LastInterviewInfoAssetShopContent>((Map<String, dynamic> e) => LastInterviewInfoAssetShopContent.fromJson(e)).toList() as M;
+    }
+    if (<LastInterviewInfoAssetLivestockContent>[] is M) {
+      return data.map<LastInterviewInfoAssetLivestockContent>((Map<String, dynamic> e) => LastInterviewInfoAssetLivestockContent.fromJson(e)).toList() as M;
+    }
+    if (<LastInterviewInfoAssetVehicleContent>[] is M) {
+      return data.map<LastInterviewInfoAssetVehicleContent>((Map<String, dynamic> e) => LastInterviewInfoAssetVehicleContent.fromJson(e)).toList() as M;
+    }
     if (<ReturnedList>[] is M) {
       return data.map<ReturnedList>((Map<String, dynamic> e) => ReturnedList.fromJson(e)).toList() as M;
     }
@@ -346,6 +374,15 @@ class JsonConvertClassCollection {
     (InterviewPendingList).toString(): InterviewPendingList.fromJson,
     (InterviewPendingListData).toString(): InterviewPendingListData.fromJson,
     (InterviewPendingListDataIdentityInfo).toString(): InterviewPendingListDataIdentityInfo.fromJson,
+    (LastInterviewInfo).toString(): LastInterviewInfo.fromJson,
+    (LastInterviewInfoIdentity).toString(): LastInterviewInfoIdentity.fromJson,
+    (LastInterviewInfoSalary).toString(): LastInterviewInfoSalary.fromJson,
+    (LastInterviewInfoAsset).toString(): LastInterviewInfoAsset.fromJson,
+    (LastInterviewInfoAssetLandContent).toString(): LastInterviewInfoAssetLandContent.fromJson,
+    (LastInterviewInfoAssetHouseContent).toString(): LastInterviewInfoAssetHouseContent.fromJson,
+    (LastInterviewInfoAssetShopContent).toString(): LastInterviewInfoAssetShopContent.fromJson,
+    (LastInterviewInfoAssetLivestockContent).toString(): LastInterviewInfoAssetLivestockContent.fromJson,
+    (LastInterviewInfoAssetVehicleContent).toString(): LastInterviewInfoAssetVehicleContent.fromJson,
     (ReturnedList).toString(): ReturnedList.fromJson,
     (ReturnedListData).toString(): ReturnedListData.fromJson,
     (ReturnedListDataIdentityInfo).toString(): ReturnedListDataIdentityInfo.fromJson,

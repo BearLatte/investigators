@@ -8,6 +8,7 @@ import 'package:investigators/common/common_snack_bar.dart';
 import 'package:investigators/models/asset_options.dart';
 import 'package:investigators/models/interview_cache_model.dart';
 import 'package:investigators/models/interview_detail_info.dart';
+import 'package:investigators/models/last_interview_info.dart';
 import 'package:investigators/models/subcategory.dart';
 import 'package:investigators/network_service/index.dart';
 import 'package:investigators/router/index.dart';
@@ -25,11 +26,14 @@ enum LocationOnTapType { land, house, business }
 
 enum SubmitType { interview, reconsideration }
 
+enum SubcategoryType { salary, moneyFlow, investment, livestock, vehicle }
+
 class InterviewDetailController extends GetxController with GetTickerProviderStateMixin {
   late InterviewDetailInfo curDetailInfo;
+  List<Tab> tabs = const [Tab(text: 'Interview Information'), Tab(text: 'User Information')];
   late TabController tabController;
 
-  List<Tab> tabs = const [Tab(text: 'Interview Information'), Tab(text: 'User Information')];
+  int pageType = 0;
 
   // name 输入控制器
   TextEditingController nameController = TextEditingController();
@@ -244,30 +248,31 @@ class InterviewDetailController extends GetxController with GetTickerProviderSta
   @override
   void onInit() async {
     super.onInit();
-
     tabController = TabController(length: tabs.length, vsync: this);
     cameras = await availableCameras();
 
-    await fetchAllAssetOptions();
-
     String? clientId = Get.arguments['clientId'];
     String? signRecordId = Get.arguments['signRecordId'];
-    int type = Get.arguments['type'];
+    pageType = Get.arguments['type'];
     if (MethodUtil.isNullOrEmpty(clientId) || MethodUtil.isNullOrEmpty(signRecordId)) {
       return;
     }
 
+    await _fetchAllAssetOptions();
+
     _currentSignRecordId = signRecordId!;
 
-    if (type == 0) {
-      await fetchInterViewDetail(signRecordId, clientId!);
+    if (pageType == 0) {
+      await _fetchInterViewDetail(signRecordId, clientId!);
     }
 
-    if(type == 1) {
-
+    if (pageType == 1) {
+      await _fetchLastInterviewInfo(signRecordId);
     }
 
     fetchCache();
+
+    update();
   }
 
   @override
@@ -323,7 +328,7 @@ class InterviewDetailController extends GetxController with GetTickerProviderSta
   /*
   * 获取面签详细信息
   * */
-  Future<void> fetchInterViewDetail(String signRecordId, String clientId) async {
+  Future<void> _fetchInterViewDetail(String signRecordId, String clientId) async {
     InterviewDetailInfo? detailInfo = await NetworkService.fetchInterviewDetail(
       clientId: clientId,
       signRecordId: signRecordId,
@@ -418,8 +423,88 @@ class InterviewDetailController extends GetxController with GetTickerProviderSta
     update();
   }
 
+  // 获取最后一次提交的面签信息
+  Future<void> _fetchLastInterviewInfo(String signRecordId) async {
+    LastInterviewInfo? lastInfo = await NetworkService.fetchLastInterViewInfo(signRecordId);
+    if (CommonSnackBar.snackBarStatus == SnackbarStatus.CLOSED && MethodUtil.isNullOrEmpty(lastInfo)) {
+      Get.back(result: 'error');
+    }
+
+    LastInterviewInfoIdentity identity = lastInfo!.identity;
+    LastInterviewInfoAsset asset = lastInfo.asset;
+    LastInterviewInfoSalary salary = lastInfo.salary;
+    nameController.text = identity.clientName;
+    isNameCorrect = identity.nameCorrect == '1' ? true : false;
+    residentialAddressController.text = identity.residentAddress;
+    residentialStatus = int.parse(identity.residentAddressCorrect);
+    companyAddressController.text = identity.companyAddress;
+    companyAddressStatus = int.parse(identity.companyAddressCorrect);
+    isInPerson = identity.isPersonalCorrect == '0' ? false : true;
+    identityPhotos = identity.otherInfo;
+
+    _curSalary = _getCategory(salary.monthlyIncome, SubcategoryType.salary);
+    salaryController.text = _curSalary?.cateName ?? '';
+    salaryPhotos = salary.monthlyIncomeProof;
+    _curMoneyFlow = _getCategory(salary.transactionFlow, SubcategoryType.moneyFlow);
+    moneyFlowController.text = _curMoneyFlow?.cateName ?? '';
+    moneyFlowPhotos = salary.transactionFlowProof;
+    _curInvestment = _getCategory(salary.investmentType, SubcategoryType.investment);
+    investmentController.text = _curInvestment?.cateName ?? '';
+    investmentDateOfDeadlineController.text = salary.investmentExpired;
+    investmentAmountController.text = salary.investmentAmount;
+    investmentPhotos = salary.investmentProof;
+
+    isBadge = salary.badgeExist == '1';
+    incumbencyPhotos = salary.badgeProof;
+
+    isHoldLand = asset.landOwnership == '1';
+    landLocationController.text = asset.landContent.addressText;
+    landFullAddressController.text = asset.landContent.detailAddress;
+    landEstimatedController.text = asset.landContent.area;
+    landMarketValueController.text = asset.landContent.estimatedValue;
+    curLandCode = asset.landContent.addressCode;
+    landPhotos = asset.landProof;
+
+    isHosing = asset.houseOwnership == '1';
+    houseLocationController.text = asset.houseContent.addressText;
+    houseFullAddressController.text = asset.houseContent.detailAddress;
+    housePurchaseTimeController.text = asset.houseContent.purchaseTime;
+    housePriceController.text = asset.houseContent.purchasePrice;
+    houseMarketValueController.text = asset.houseContent.estimatedValue;
+    curHouseCode = asset.houseContent.addressCode;
+    housePhotos = asset.houseProof;
+
+    isBusiness = asset.shopAssets == '1';
+    businessLocationController.text = asset.shopContent.addressText;
+    businessFullAddressController.text = asset.shopContent.detailAddress;
+    businessPurchaseTimeController.text = asset.shopContent.purchaseTime;
+    businessPriceController.text = asset.shopContent.purchasePrice;
+    businessMarketValueController.text = asset.shopContent.estimatedValue;
+    curBusinessCode = asset.shopContent.addressCode;
+    businessPhotos = asset.shopProof;
+
+    _curLivestock = _getSubcategoryTypeWith(asset.livestockCate, _livestockOptions);
+    livestockAmountController.text = asset.livestockContent.number;
+    livestockUnitPriceController.text = asset.livestockContent.estimatedValuePer;
+    livestockTotalValueController.text = asset.livestockContent.estimatedValueTotal;
+    livestockPhotos = asset.livestockProof;
+
+    _curVehicle = _getSubcategoryTypeWith(asset.vehicleCate, _vehicleOptions);
+    vehiclePurchasePriceController.text = asset.vehicleContent.purchasePrice;
+    vehiclePurchaseDateController.text = asset.vehicleContent.purchaseTime;
+    vehicleMarketValueController.text = asset.vehicleContent.estimatedValue;
+    vehiclePhotos = asset.vehicleProof;
+
+    otherSupportingController.text = asset.otherAssetsContent;
+    otherAssetPhotos = asset.otherAssetsProof;
+
+    accountList = lastInfo.accountInfo;
+    update();
+    debugPrint(lastInfo.toString());
+  }
+
   // 获取所有下拉列表项
-  Future<void> fetchAllAssetOptions() async {
+  Future<void> _fetchAllAssetOptions() async {
     AssetOptions? options = await NetworkService.getAssetSubcategory();
     if (options == null) return;
     _salaryOptions = options.monthlyIncome;
@@ -427,6 +512,29 @@ class InterviewDetailController extends GetxController with GetTickerProviderSta
     _investmentOptions = options.investmentCertificate;
     _livestockOptions = options.livestockAssets;
     _vehicleOptions = options.motorVehicles;
+  }
+
+  // 从下拉列表中选取特定 id 的类
+  Subcategory? _getCategory(String id, SubcategoryType type) {
+    switch (type) {
+      case SubcategoryType.salary:
+        return _getSubcategoryTypeWith(id, _salaryOptions);
+      case SubcategoryType.moneyFlow:
+        return _getSubcategoryTypeWith(id, _salaryOptions);
+      case SubcategoryType.vehicle:
+        return _getSubcategoryTypeWith(id, _vehicleOptions);
+      case SubcategoryType.livestock:
+        return _getSubcategoryTypeWith(id, _livestockOptions);
+      case SubcategoryType.investment:
+        return _getSubcategoryTypeWith(id, _investmentOptions);
+    }
+  }
+
+  Subcategory? _getSubcategoryTypeWith(String id, List<Subcategory> items) {
+    for (var item in items) {
+      if (item.cateId == id) return item;
+    }
+    return null;
   }
 
   // 获取缓存
@@ -786,6 +894,7 @@ class InterviewDetailController extends GetxController with GetTickerProviderSta
 
     InterviewCacheModelIncumbencyInfo incumbencyInfo = InterviewCacheModelIncumbencyInfo();
     incumbencyInfo.badge = isBadge;
+
     incumbencyInfo.photos = incumbencyPhotos;
     model.incumbencyInfo = incumbencyInfo;
 
@@ -884,7 +993,9 @@ class InterviewDetailController extends GetxController with GetTickerProviderSta
     identity['name_correct'] = isNameCorrect == true ? '1' : '0';
     identity['client_name'] = nameController.text;
     identity['resident_address_correct'] = residentialStatus == 0 ? '0' : (residentialStatus == 1 ? '1' : '2');
+    identity['resident_address'] = residentialAddressController.text;
     identity['company_address_correct'] = companyAddressStatus == 0 ? '0' : (companyAddressStatus == 1 ? '1' : '2');
+    identity['company_address'] = companyAddressController.text;
     identity['is_personal_correct'] = isInPerson == true ? '1' : '0';
     identity['other_info'] = MethodUtil.configImageNames(identityPhotos);
     params['identity'] = jsonEncode(identity);
@@ -892,27 +1003,35 @@ class InterviewDetailController extends GetxController with GetTickerProviderSta
     Map<String, dynamic> salary = {};
     salary['monthly_income'] = _curSalary?.cateId ?? '';
     salary['monthly_income_proof'] = MethodUtil.configImageNames(salaryPhotos);
+
     salary['transaction_flow'] = _curMoneyFlow?.cateId ?? '';
     salary['transaction_flow_proof'] = MethodUtil.configImageNames(moneyFlowPhotos);
+
     salary['investment_type'] = _curInvestment?.cateId ?? '';
     salary['investment_expired'] = investmentDateOfDeadlineController.text;
     salary['investment_amount'] = investmentAmountController.text;
     salary['investment_proof'] = MethodUtil.configImageNames(investmentPhotos);
+
     salary['badge_exist'] = isBadge == true ? '1' : '0';
     salary['badge_proof'] = MethodUtil.configImageNames(incumbencyPhotos);
+
     params['salary'] = jsonEncode(salary);
 
     Map<String, dynamic> asset = {};
     asset['land_ownership'] = isHoldLand == true ? '1' : '0';
     asset['land_proof'] = MethodUtil.configImageNames(landPhotos);
-    Map<String, dynamic> landContent = {};
-    landContent['address_code'] = curLandCode ?? '';
-    landContent['detail_address'] = landFullAddressController.text;
-    landContent['area'] = landEstimatedController.text;
-    landContent['estimated_value'] = landMarketValueController.text;
-    asset['land_content'] = jsonEncode(landContent);
-    asset['house_ownership'] = isHosing == true ? '1' : '0';
-    asset['house_proof'] = MethodUtil.configImageNames(housePhotos);
+
+    if (isHosing == true) {
+      asset['house_ownership'] = '1';
+      Map<String, dynamic> landContent = {};
+      landContent['address_code'] = curLandCode ?? '';
+      landContent['detail_address'] = landFullAddressController.text;
+      landContent['area'] = landEstimatedController.text;
+      landContent['estimated_value'] = landMarketValueController.text;
+      asset['land_content'] = jsonEncode(landContent);
+      asset['house_proof'] = MethodUtil.configImageNames(housePhotos);
+    }
+
     Map<String, dynamic> houseContent = {};
     houseContent['address_code'] = curHouseCode ?? '';
     houseContent['detail_address'] = houseFullAddressController.text;
@@ -922,6 +1041,7 @@ class InterviewDetailController extends GetxController with GetTickerProviderSta
     asset['house_content'] = jsonEncode(houseContent);
     asset['shop_assets'] = isBusiness == true ? '1' : '0';
     asset['shop_proof'] = MethodUtil.configImageNames(businessPhotos);
+
     Map<String, dynamic> shopContent = {};
     shopContent['address_code'] = curBusinessCode ?? '';
     shopContent['detail_address'] = businessFullAddressController.text;
@@ -932,6 +1052,7 @@ class InterviewDetailController extends GetxController with GetTickerProviderSta
     asset['livestock_assets'] = _curLivestock == null ? '0' : '1';
     asset['livestock_cate'] = _curLivestock?.cateId ?? '';
     asset['livestock_proof'] = MethodUtil.configImageNames(livestockPhotos);
+
     Map<String, dynamic> livestockContent = {};
     livestockContent['number'] = livestockAmountController.text;
     livestockContent['estimated_value_total'] = livestockTotalValueController.text;
@@ -946,6 +1067,7 @@ class InterviewDetailController extends GetxController with GetTickerProviderSta
     vehicleContent['estimated_value'] = vehicleMarketValueController.text;
     asset['vehicle_content'] = jsonEncode(vehicleContent);
     asset['other_assets'] = otherSupportingController.text.trim().isEmpty ? '0' : '1';
+    asset['other_assets_content'] = otherSupportingController.text;
     asset['other_assets_proof'] = MethodUtil.configImageNames(otherAssetPhotos);
     params['asset'] = jsonEncode(asset);
     switch (type) {
@@ -962,14 +1084,21 @@ class InterviewDetailController extends GetxController with GetTickerProviderSta
     }
   }
 
-  void _interviewAction(Map<String, dynamic> params) {
-    Get.toNamed(ApplicationRoutes.contract, arguments: {
-      'detail_params': params,
-      'pid': curDetailInfo.clientInfo.credit.pid,
-      'rid': curDetailInfo.clientInfo.credit.rid,
-      'money': curDetailInfo.clientInfo.credit.amount,
-      'token': curDetailInfo.clientInfo.credit.token,
-    });
+  void _interviewAction(Map<String, dynamic> params) async {
+    if (pageType == 0) {
+      Get.toNamed(ApplicationRoutes.contract, arguments: {
+        'detail_params': params,
+        'pid': curDetailInfo.clientInfo.credit.pid,
+        'rid': curDetailInfo.clientInfo.credit.rid,
+        'money': curDetailInfo.clientInfo.credit.amount,
+        'token': curDetailInfo.clientInfo.credit.token,
+      });
+    } else {
+      bool isSuccess = await NetworkService.resaveInterviewContent(params);
+      if(isSuccess) {
+        Get.back(result: 'success');
+      }
+    }
   }
 
   void _reconsiderationAction(Map<String, dynamic> params) {

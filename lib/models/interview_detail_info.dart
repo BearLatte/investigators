@@ -302,6 +302,8 @@ class InterviewDetailInfoInterviewInfoAccount {
 	late String channelName;
 	@JSONField(name: "withdraw_type")
 	late String withdrawType;
+	@JSONField(name: 'is_choose')
+	late String isChoose;
 
 	InterviewDetailInfoInterviewInfoAccount();
 

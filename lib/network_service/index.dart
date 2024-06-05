@@ -12,6 +12,7 @@ import 'package:investigators/models/asset_options.dart';
 import 'package:investigators/models/base_response.dart';
 import 'package:investigators/models/interview_detail_info.dart';
 import 'package:investigators/models/interview_pending_list.dart';
+import 'package:investigators/models/last_interview_info.dart';
 import 'package:investigators/models/returned_list.dart';
 import 'package:investigators/models/sign_history_model.dart';
 import 'package:investigators/models/user_model.dart';
@@ -167,6 +168,27 @@ class NetworkService {
     }
     CommonSnackBar.showSnackBar(response.msg, type: SnackType.error);
     return false;
+  }
+
+  // 获取最近一次的面签信息
+  static Future<LastInterviewInfo?> fetchLastInterViewInfo(String signRecordId) async {
+    BaseResponse response = await _get<LastInterviewInfo>('/inv/revert/getLastDetails', params: {'sign_record_id': signRecordId});
+    if (response.code != 1) {
+      CommonSnackBar.showSnackBar(response.msg, type: SnackType.error);
+      return null;
+    }
+    return response.data;
+  }
+
+  // 面签重提
+  static Future<bool> resaveInterviewContent(Map<String, dynamic> params) async {
+    BaseResponse response = await _post('/inv/revert/resubmit', params);
+    if (response.code != 1) {
+      CommonSnackBar.showSnackBar(response.msg, type: SnackType.error);
+      return false;
+    }
+
+    return true;
   }
 
   static Future<List<AddressListItem>?> fetchAddress(String type, {String? parentCode}) async {

@@ -11,7 +11,8 @@ class DioInterceptor extends Interceptor {
     options.headers['Authorization'] = Global.instance.accessToken;
 
     String data = jsonEncode(options.data);
-    print('DEBUG: header = ${jsonEncode(options.headers)}, data = $data');
+    String header = jsonEncode(options.headers);
+    print('DEBUG: header = $header, data = $data');
 
     super.onRequest(options, handler);
   }

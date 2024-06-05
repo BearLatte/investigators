@@ -20,8 +20,6 @@ class LoginController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    phoneController.text = '9789732334';
-    pwdController.text = '123456';
     phoneController.addListener(() {
       if (phoneController.text.trim().length == 10) {
         pwdNode.requestFocus();

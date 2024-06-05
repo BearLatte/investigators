@@ -58,5 +58,14 @@ class ReturnedController extends GetxController {
       'clientId': data.clientId,
       'type': 1,
     });
+
+    if (result == 'success') {
+      CommonSnackBar.showSnackBar(
+        'Interview with id ${data.signRecordId} resubmit success.',
+        type: SnackType.success,
+      );
+    }
+
+    onRefresh(true);
   }
 }

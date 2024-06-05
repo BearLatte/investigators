@@ -633,6 +633,10 @@ InterviewDetailInfoInterviewInfoAccount $InterviewDetailInfoInterviewInfoAccount
   if (withdrawType != null) {
     interviewDetailInfoInterviewInfoAccount.withdrawType = withdrawType;
   }
+  final String? isChoose = jsonConvert.convert<String>(json['is_choose']);
+  if (isChoose != null) {
+    interviewDetailInfoInterviewInfoAccount.isChoose = isChoose;
+  }
   return interviewDetailInfoInterviewInfoAccount;
 }
 
@@ -643,6 +647,7 @@ Map<String, dynamic> $InterviewDetailInfoInterviewInfoAccountToJson(InterviewDet
   data['account_holder'] = entity.accountHolder;
   data['channel_name'] = entity.channelName;
   data['withdraw_type'] = entity.withdrawType;
+  data['is_choose'] = entity.isChoose;
   return data;
 }
 
@@ -653,13 +658,15 @@ extension InterviewDetailInfoInterviewInfoAccountExtension on InterviewDetailInf
     String? accountHolder,
     String? channelName,
     String? withdrawType,
+    String? isChoose,
   }) {
     return InterviewDetailInfoInterviewInfoAccount()
       ..withdrawRelation = withdrawRelation ?? this.withdrawRelation
       ..accountNo = accountNo ?? this.accountNo
       ..accountHolder = accountHolder ?? this.accountHolder
       ..channelName = channelName ?? this.channelName
-      ..withdrawType = withdrawType ?? this.withdrawType;
+      ..withdrawType = withdrawType ?? this.withdrawType
+      ..isChoose = isChoose ?? this.isChoose;
   }
 }
 
