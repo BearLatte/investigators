@@ -16,7 +16,7 @@ class ReservationModalView extends StatelessWidget {
       backgroundColor: Colors.black.withOpacity(0.5),
       body: GetBuilder<ReservationModalViewController>(
         init: Get.put(ReservationModalViewController()),
-        builder: (controller) {
+        builder: (ReservationModalViewController controller) {
           late AddressModel residentialAdd;
           AddressModel? companyAdd;
 
@@ -26,10 +26,6 @@ class ReservationModalView extends StatelessWidget {
             } else {
               companyAdd = item;
             }
-          }
-
-          if(controller.addressList.length == 1) {
-            controller.selectedAddressAction(residentialAdd);
           }
 
           return Column(

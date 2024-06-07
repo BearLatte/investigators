@@ -44,10 +44,19 @@ class ReservationModalViewController extends GetxController {
     selectedAddId = Get.arguments['selectedAddId'];
     if (selectedAddId != null) {
       for (var item in addressList) {
-        if(item.addressId == selectedAddId) {
+        if (item.addressId == selectedAddId) {
           selectedAddress = item;
         }
       }
+    }
+  }
+
+  @override
+  void onReady() {
+    super.onReady();
+    if(addressList.length == 1) {
+      AddressModel address = addressList[0];
+      selectedAddressAction(address);
     }
   }
 
