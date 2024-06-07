@@ -85,14 +85,14 @@ class Global {
   void initNetwork({required String baseUrl}) {
     NetOptions.instance
         .setBaseUrl(baseUrl)
-        // .setHttpClientAdapter(IOHttpClientAdapter()
-        //   ..onHttpClientCreate = (client) {
-        //     client.findProxy = (uri) {
-        //       return 'PROXY 192.168.0.26:8888';
-        //     };
-        //     client.badCertificateCallback = (X509Certificate cert, String host, int port) => true;
-        //     return client;
-        //   })
+        .setHttpClientAdapter(IOHttpClientAdapter()
+          ..onHttpClientCreate = (client) {
+            client.findProxy = (uri) {
+              return 'PROXY 192.168.0.26:8888';
+            };
+            client.badCertificateCallback = (X509Certificate cert, String host, int port) => true;
+            return client;
+          })
         .addInterceptor(DioInterceptor())
         .setConnectTimeout(const Duration(milliseconds: 3000))
         .setReceiveTimeout(const Duration(milliseconds: 3000))

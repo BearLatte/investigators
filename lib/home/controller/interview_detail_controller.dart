@@ -1021,16 +1021,14 @@ class InterviewDetailController extends GetxController with GetTickerProviderSta
     asset['land_ownership'] = isHoldLand == true ? '1' : '0';
     asset['land_proof'] = MethodUtil.configImageNames(landPhotos);
 
-    if (isHosing == true) {
-      asset['house_ownership'] = '1';
-      Map<String, dynamic> landContent = {};
-      landContent['address_code'] = curLandCode ?? '';
-      landContent['detail_address'] = landFullAddressController.text;
-      landContent['area'] = landEstimatedController.text;
-      landContent['estimated_value'] = landMarketValueController.text;
-      asset['land_content'] = jsonEncode(landContent);
-      asset['house_proof'] = MethodUtil.configImageNames(housePhotos);
-    }
+    asset['house_ownership'] = '1';
+    Map<String, dynamic> landContent = {};
+    landContent['address_code'] = curLandCode ?? '';
+    landContent['detail_address'] = landFullAddressController.text;
+    landContent['area'] = landEstimatedController.text;
+    landContent['estimated_value'] = landMarketValueController.text;
+    asset['land_content'] = jsonEncode(landContent);
+    asset['house_proof'] = MethodUtil.configImageNames(housePhotos);
 
     Map<String, dynamic> houseContent = {};
     houseContent['address_code'] = curHouseCode ?? '';
@@ -1095,7 +1093,7 @@ class InterviewDetailController extends GetxController with GetTickerProviderSta
       });
     } else {
       bool isSuccess = await NetworkService.resaveInterviewContent(params);
-      if(isSuccess) {
+      if (isSuccess) {
         Get.back(result: 'success');
       }
     }
