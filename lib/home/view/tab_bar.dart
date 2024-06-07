@@ -22,8 +22,8 @@ class TabBar extends StatelessWidget {
                 type: BottomNavigationBarType.fixed,
                 backgroundColor: Colors.white,
                 items: const [
-                  BottomNavigationBarItem(icon: Icon(Icons.home, size: 20), label: 'Home'),
-                  BottomNavigationBarItem(icon: Icon(Icons.person, size: 20), label: 'Profile'),
+                  BottomNavigationBarItem(icon: Icon(Icons.home, size: 20), label: 'To-dos'),
+                  BottomNavigationBarItem(icon: Icon(Icons.person, size: 20), label: 'Mine'),
                 ],
                 onTap: controller.updateView,
               ),

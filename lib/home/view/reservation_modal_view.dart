@@ -18,7 +18,7 @@ class ReservationModalView extends StatelessWidget {
         init: Get.put(ReservationModalViewController()),
         builder: (controller) {
           late AddressModel residentialAdd;
-          late AddressModel companyAdd;
+          AddressModel? companyAdd;
 
           for (var item in controller.addressList) {
             if (item.type == '1') {
@@ -26,6 +26,10 @@ class ReservationModalView extends StatelessWidget {
             } else {
               companyAdd = item;
             }
+          }
+
+          if(controller.addressList.length == 1) {
+            controller.selectedAddressAction(residentialAdd);
           }
 
           return Column(
@@ -66,20 +70,22 @@ class ReservationModalView extends StatelessWidget {
                             ),
                           ),
                         )),
-                    InkWell(
-                      onTap: () => controller.selectedAddressAction(companyAdd),
-                        child: Container(
-                          margin: const EdgeInsets.only(bottom: 5),
-                          padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 8),
-                          decoration: BoxDecoration(
-                              color: controller.selectedAddId == companyAdd.addressId ? Colors.white : HexColor('#D9EFFD'),
-                              border: Border.all(color: Colors.white, width: 1.0),
-                              borderRadius: BorderRadius.circular(5)),
-                          child: Text(
-                            'Company Address: ${companyAdd.fullAddress}',
-                            style: TextStyle(color: controller.selectedAddId == companyAdd.addressId ? Global.instance.themeColor : Global.instance.textPrimaryColor, fontSize: 13),
-                          ),
-                        )),
+                    if (companyAdd != null)
+                      InkWell(
+                          onTap: () => controller.selectedAddressAction(companyAdd!),
+                          child: Container(
+                            margin: const EdgeInsets.only(bottom: 5),
+                            padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 8),
+                            decoration: BoxDecoration(
+                                color: controller.selectedAddId == companyAdd.addressId ? Colors.white : HexColor('#D9EFFD'),
+                                border: Border.all(color: Colors.white, width: 1.0),
+                                borderRadius: BorderRadius.circular(5)),
+                            child: Text(
+                              'Company Address: ${companyAdd.fullAddress}',
+                              style:
+                                  TextStyle(color: controller.selectedAddId == companyAdd.addressId ? Global.instance.themeColor : Global.instance.textPrimaryColor, fontSize: 13),
+                            ),
+                          )),
                     const SizedBox(height: 5),
                     TextButton(
                         onPressed: controller.confirmAction,
@@ -130,37 +136,36 @@ class ReservationModalView extends StatelessWidget {
       isDismissible: false,
       enableDrag: false,
       GetBuilder<ReservationModalViewController>(
-        builder: (controller) =>
-            Container(
-              padding: const EdgeInsets.only(bottom: 10),
-              color: Colors.white,
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Container(
-                      margin: const EdgeInsets.only(bottom: 10),
-                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-                      decoration: BoxDecoration(border: Border(bottom: BorderSide(color: HexColor('#CCCCCC'), width: 1.0))),
-                      child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-                        InkWell(
-                          onTap: Get.back,
-                          child: Text('Cancel', style: TextStyle(color: Global.instance.themeColor, fontSize: 15, fontWeight: FontWeight.bold)),
-                        ),
-                        InkWell(
-                          onTap: controller.confirmSelectDate,
-                          child: Text('Confirm', style: TextStyle(color: Global.instance.themeColor, fontSize: 15, fontWeight: FontWeight.bold)),
-                        ),
-                      ])),
-                  EasyInfiniteDateTimeLine(
-                    firstDate: DateTime.now(),
-                    focusDate: controller.selectedDate,
-                    lastDate: DateTime.now().add(const Duration(days: 30)),
-                    showTimelineHeader: false,
-                    onDateChange: controller.dateChanged,
-                  )
-                ],
-              ),
-            ),
+        builder: (controller) => Container(
+          padding: const EdgeInsets.only(bottom: 10),
+          color: Colors.white,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                  margin: const EdgeInsets.only(bottom: 10),
+                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                  decoration: BoxDecoration(border: Border(bottom: BorderSide(color: HexColor('#CCCCCC'), width: 1.0))),
+                  child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+                    InkWell(
+                      onTap: Get.back,
+                      child: Text('Cancel', style: TextStyle(color: Global.instance.themeColor, fontSize: 15, fontWeight: FontWeight.bold)),
+                    ),
+                    InkWell(
+                      onTap: controller.confirmSelectDate,
+                      child: Text('Confirm', style: TextStyle(color: Global.instance.themeColor, fontSize: 15, fontWeight: FontWeight.bold)),
+                    ),
+                  ])),
+              EasyInfiniteDateTimeLine(
+                firstDate: DateTime.now(),
+                focusDate: controller.selectedDate,
+                lastDate: DateTime.now().add(const Duration(days: 30)),
+                showTimelineHeader: false,
+                onDateChange: controller.dateChanged,
+              )
+            ],
+          ),
+        ),
       ),
     );
   }

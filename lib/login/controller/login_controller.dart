@@ -67,8 +67,6 @@ class LoginController extends GetxController {
     Get.offAllNamed(ApplicationRoutes.tab);
   }
 
-
-
   Future<bool> _showVerifyCodeAlert() async {
     codeController.clear();
     return await Get.dialog(
@@ -87,26 +85,29 @@ class LoginController extends GetxController {
                   Text.rich(
                     TextSpan(children: [
                       TextSpan(
-                          text: 'A verification code has sent to your mobile phone number ',
-                          style: TextStyle(
-                            color: HexColor('#282828'),
-                            fontSize: 15,
-                            fontWeight: FontWeight.bold,
-                          )),
+                        text: 'A verification code has sent to your mobile phone number ',
+                        style: TextStyle(
+                          color: HexColor('#282828'),
+                          fontSize: 15,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
                       TextSpan(
-                          text: phoneController.text.replaceRange(2, phoneController.text.length, '********'),
-                          style: TextStyle(
-                            color: Global.instance.themeColor,
-                            fontSize: 15,
-                            fontWeight: FontWeight.bold,
-                          )),
+                        text: phoneController.text.replaceRange(2, phoneController.text.length, '********'),
+                        style: TextStyle(
+                          color: Global.instance.themeColor,
+                          fontSize: 15,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
                       TextSpan(
-                          text: ', please enter it below.',
-                          style: TextStyle(
-                            color: HexColor('#282828'),
-                            fontSize: 15,
-                            fontWeight: FontWeight.bold,
-                          ))
+                        text: ', please enter it below.',
+                        style: TextStyle(
+                          color: HexColor('#282828'),
+                          fontSize: 15,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      )
                     ]),
                   ),
                   const SizedBox(height: 5),
@@ -126,20 +127,21 @@ class LoginController extends GetxController {
                   ),
                   const SizedBox(height: 10),
                   TextButton(
-                      onPressed: () {
-                        if (_wasSentCode == codeController.text) {
-                          Get.back(result: true);
-                        } else {
-                          CommonSnackBar.showSnackBar('The verification code entered is wrong!', type: SnackType.error);
-                        }
-                      },
-                      child: Container(
-                        height: 35,
-                        width: double.infinity,
-                        alignment: Alignment.center,
-                        decoration: BoxDecoration(color: Global.instance.themeColor, borderRadius: BorderRadius.circular(5)),
-                        child: const Text('Confirm', style: TextStyle(color: Colors.white, fontSize: 15, fontWeight: FontWeight.bold)),
-                      ))
+                    onPressed: () {
+                      if (_wasSentCode == codeController.text) {
+                        Get.back(result: true);
+                      } else {
+                        CommonSnackBar.showSnackBar('The verification code entered is wrong!', type: SnackType.error);
+                      }
+                    },
+                    child: Container(
+                      height: 35,
+                      width: double.infinity,
+                      alignment: Alignment.center,
+                      decoration: BoxDecoration(color: Global.instance.themeColor, borderRadius: BorderRadius.circular(5)),
+                      child: const Text('Confirm', style: TextStyle(color: Colors.white, fontSize: 15, fontWeight: FontWeight.bold)),
+                    ),
+                  )
                 ],
               ),
             ),
