@@ -59,7 +59,7 @@ Map<String, dynamic> $InterviewDetailInfoInterviewInfoToJson(InterviewDetailInfo
   final Map<String, dynamic> data = <String, dynamic>{};
   data['name'] = entity.name;
   data['address'] = entity.address.map((v) => v.toJson()).toList();
-  data['asset'] = entity.asset.toJson();
+  data['asset'] = entity.asset?.toJson();
   data['account'] = entity.account?.map((v) => v.toJson()).toList();
   return data;
 }

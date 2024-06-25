@@ -353,11 +353,13 @@ class InterviewDetailController extends GetxController with GetTickerProviderSta
 
     accountList = curDetailInfo.interviewInfo.account ?? [];
 
-    InterviewDetailInfoInterviewInfoAsset asset = curDetailInfo.interviewInfo.asset;
+    InterviewDetailInfoInterviewInfoAsset? asset = curDetailInfo.interviewInfo.asset;
+
+    if (asset == null) return;
 
     if (asset.monthlyIncome != null) {
-      InterviewDetailInfoInterviewInfoAssetMonthlyIncome income = asset.monthlyIncome!;
-      salaryPhotos = income.imgs;
+      InterviewDetailInfoInterviewInfoAssetMonthlyIncome? income = asset.monthlyIncome!;
+      salaryPhotos = income?.imgs ?? [];
     }
 
     if (asset.lastMonthTransactionFlow != null) {
@@ -370,7 +372,7 @@ class InterviewDetailController extends GetxController with GetTickerProviderSta
       for (var item in _investmentOptions) {
         if (item.cateId == investmentCertificate.cateId) _curInvestment = item;
       }
-      investmentController.text = _curInvestment!.cateName;
+      investmentController.text = _curInvestment?.cateName ?? '';
       investmentPhotos = investmentCertificate.imgs;
     }
 
@@ -564,7 +566,7 @@ class InterviewDetailController extends GetxController with GetTickerProviderSta
 
     if (!MethodUtil.isNullOrEmpty(cacheModel.investmentInfo)) {
       _curInvestment = cacheModel.investmentInfo?.investmentType;
-      investmentController.text = cacheModel.investmentInfo!.investmentType!.cateName;
+      investmentController.text = cacheModel.investmentInfo?.investmentType?.cateName ?? '';
       investmentPhotos = cacheModel.investmentInfo!.photos;
       investmentDateOfDeadlineController.text = cacheModel.investmentInfo!.voucherValidity;
       investmentAmountController.text = cacheModel.investmentInfo!.voucherAmount;
@@ -609,7 +611,7 @@ class InterviewDetailController extends GetxController with GetTickerProviderSta
 
     if (!MethodUtil.isNullOrEmpty(cacheModel.livestockAsset)) {
       _curLivestock = cacheModel.livestockAsset!.assetType;
-      livestockController.text = cacheModel.livestockAsset!.assetType!.cateName;
+      livestockController.text = cacheModel.livestockAsset?.assetType?.cateName ?? '';
       livestockAmountController.text = cacheModel.livestockAsset!.amount;
       livestockUnitPriceController.text = cacheModel.livestockAsset!.estimatedUnitPrice;
       livestockTotalValueController.text = cacheModel.livestockAsset!.totalMarketValue;
@@ -618,7 +620,7 @@ class InterviewDetailController extends GetxController with GetTickerProviderSta
 
     if (!MethodUtil.isNullOrEmpty(cacheModel.vehicle)) {
       _curVehicle = cacheModel.vehicle!.vehicleType;
-      vehicleController.text = cacheModel.vehicle!.vehicleType!.cateName;
+      vehicleController.text = cacheModel.vehicle?.vehicleType?.cateName ?? '';
       vehiclePurchasePriceController.text = cacheModel.vehicle!.purchasePrice;
       vehiclePurchaseDateController.text = cacheModel.vehicle!.purchaseDate;
       vehicleMarketValueController.text = cacheModel.vehicle!.marketValue;

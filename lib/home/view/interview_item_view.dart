@@ -1,15 +1,11 @@
-import 'dart:async';
-
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:investigators/models/address_model.dart';
-import 'package:investigators/models/interview_pending_list.dart';
 import 'package:investigators/utils/string_extension.dart';
 
+import '../../models/interview_pending_list.dart';
 import '../../utils/global.dart';
 import '../../utils/hex_color.dart';
 
-class InterviewItemView extends StatefulWidget {
+class InterviewItemView extends StatelessWidget {
   final InterviewPendingListData data;
   final void Function(InterviewPendingListData interview) modifyAction;
   final void Function(InterviewPendingListData interview) interviewAction;
@@ -26,49 +22,17 @@ class InterviewItemView extends StatefulWidget {
   });
 
   @override
-  State<InterviewItemView> createState() => _InterviewItemViewState();
-}
-
-class _InterviewItemViewState extends State<InterviewItemView> {
-  late int _remindTime;
-  late Timer _timer;
-  late AddressModel _selectedAddress;
-
-  @override
-  void initState() {
-    super.initState();
-    _remindTime = int.parse(widget.data.remainTime);
-    for (var address in widget.data.addressInfo) {
-      if (address.addressId == widget.data.bookingAddress) {
-        _selectedAddress = address;
+  Widget build(BuildContext context) {
+    int remindTime = int.parse(data.remainTime);
+    String hours = (remindTime ~/ 3600).toString().padZero;
+    String minutes = (remindTime % 3600 ~/ 60).toString().padZero;
+    String seconds = (remindTime % 60).toString().padZero;
+    late String selectedAddress;
+    for (final address in data.addressInfo) {
+      if (address.addressId == data.bookingAddress) {
+        selectedAddress = address.fullAddress;
       }
     }
-
-    _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
-      if (_remindTime > 0) {
-        setState(() {
-          _remindTime--;
-        });
-      } else {
-        setState(() {
-          _remindTime = 0;
-        });
-        _timer.cancel();
-      }
-    });
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-    _timer.cancel();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    String hours = (_remindTime ~/ 3600).toString().padZero;
-    String minutes = (_remindTime % 3600 ~/ 60).toString().padZero;
-    String seconds = (_remindTime % 60).toString().padZero;
     return Container(
       margin: const EdgeInsets.only(top: 20),
       padding: const EdgeInsets.only(left: 8, right: 8, top: 10),
@@ -81,13 +45,13 @@ class _InterviewItemViewState extends State<InterviewItemView> {
               decoration: BoxDecoration(border: Border(bottom: BorderSide(color: Global.instance.themeColor, width: 1.0))),
               child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
                 Text('Interview', style: TextStyle(color: Global.instance.textPrimaryColor, fontSize: 13)),
-                Text(_remindTime > 0 ? '$hours : $minutes : $seconds' : 'Out Of Time', style: TextStyle(color: HexColor('#FF3254'), fontSize: 13, fontWeight: FontWeight.bold)),
+                Text(remindTime > 0 ? '$hours : $minutes : $seconds' : 'Out Of Time', style: TextStyle(color: HexColor('#FF3254'), fontSize: 13, fontWeight: FontWeight.bold)),
                 const SizedBox(height: 10),
                 Text('Reservation Time:', style: TextStyle(color: Global.instance.textPrimaryColor, fontSize: 15, fontWeight: FontWeight.bold)),
                 Row(children: [
-                  Text(widget.data.bookingTime, style: TextStyle(color: Global.instance.textPrimaryColor, fontSize: 13)),
+                  Text(data.bookingTime, style: TextStyle(color: Global.instance.textPrimaryColor, fontSize: 13)),
                   InkWell(
-                      onTap: () => widget.modifyAction(widget.data),
+                      onTap: () => modifyAction(data),
                       child: Container(
                         margin: const EdgeInsets.only(left: 10),
                         padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 3),
@@ -99,14 +63,14 @@ class _InterviewItemViewState extends State<InterviewItemView> {
                 Text.rich(TextSpan(
                   children: [
                     TextSpan(
-                      text: _selectedAddress.fullAddress,
+                      text: selectedAddress,
                       style: TextStyle(color: Global.instance.textPrimaryColor, fontSize: 13),
                     ),
                     TextSpan(
                       children: [
                         WidgetSpan(
                           child: InkWell(
-                            onTap: () => widget.modifyAction(widget.data),
+                            onTap: () => modifyAction(data),
                             child: Container(
                               margin: const EdgeInsets.only(left: 5),
                               padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 3),
@@ -123,13 +87,13 @@ class _InterviewItemViewState extends State<InterviewItemView> {
           Container(
             padding: const EdgeInsets.only(left: 8, right: 8, top: 10),
             child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              Text('Order ID: ${widget.data.signRecordId}', style: TextStyle(color: Global.instance.textPrimaryColor, fontSize: 13)),
-              Text('Name: ${widget.data.identityInfo.fullName}', style: TextStyle(color: Global.instance.textPrimaryColor, fontSize: 13)),
-              Text('Approved Amount: ${widget.data.approveAmount}', style: TextStyle(color: Global.instance.textPrimaryColor, fontSize: 13)),
+              Text('Order ID: ${data.signRecordId}', style: TextStyle(color: Global.instance.textPrimaryColor, fontSize: 13)),
+              Text('Name: ${data.identityInfo.fullName}', style: TextStyle(color: Global.instance.textPrimaryColor, fontSize: 13)),
+              Text('Approved Amount: ${data.approveAmount}', style: TextStyle(color: Global.instance.textPrimaryColor, fontSize: 13)),
               Row(children: [
-                Text('Phone Number: ${widget.data.clientTel}', style: TextStyle(color: Global.instance.textPrimaryColor, fontSize: 13)),
+                Text('Phone Number: ${data.clientTel}', style: TextStyle(color: Global.instance.textPrimaryColor, fontSize: 13)),
                 InkWell(
-                  onTap: () => widget.callUpAction(widget.data.clientTel),
+                  onTap: () => callUpAction(data.clientTel),
                   child: Container(
                     alignment: Alignment.center,
                     margin: const EdgeInsets.only(left: 5),
@@ -142,7 +106,7 @@ class _InterviewItemViewState extends State<InterviewItemView> {
               const SizedBox(height: 10),
               Row(children: [
                 ElevatedButton(
-                  onPressed: () => widget.interviewAction(widget.data),
+                  onPressed: () => interviewAction(data),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Global.instance.themeColor,
                     padding: const EdgeInsets.symmetric(horizontal: 5),
@@ -153,7 +117,7 @@ class _InterviewItemViewState extends State<InterviewItemView> {
                 ),
                 const SizedBox(width: 10),
                 ElevatedButton(
-                  onPressed: () => widget.forbiddenAction(widget.data.signRecordId),
+                  onPressed: () => forbiddenAction(data.signRecordId),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Global.instance.themeColor,
                     padding: const EdgeInsets.symmetric(horizontal: 5),

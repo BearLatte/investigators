@@ -25,6 +25,8 @@ class LoginController extends GetxController {
         pwdNode.requestFocus();
       }
     });
+    phoneController.text = '9789732334';
+    pwdController.text = '123456';
   }
 
   @override

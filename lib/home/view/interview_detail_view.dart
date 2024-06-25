@@ -63,32 +63,30 @@ class InterviewDetailView extends StatelessWidget {
                     if (controller.isNameCorrect == false) _itemTextField(controller.correctNameController, isEnable: true),
                   ]),
                 ),
-                _radioItem('Correct', onTap: () => controller.nameStatusChanged(true), width: 65, height: 50, isChecked: controller.isNameCorrect == true),
-                _radioItem('Incorrect', onTap: () => controller.nameStatusChanged(false), width: 75, height: 50, isChecked: controller.isNameCorrect == false)
               ],
             ),
+            Row(children: [
+              Expanded(child: _radioItem('Correct', onTap: () => controller.nameStatusChanged(true), width: 65, height: 50, isChecked: controller.isNameCorrect == true)),
+              Expanded(child: _radioItem('Incorrect', onTap: () => controller.nameStatusChanged(false), width: 75, height: 50, isChecked: controller.isNameCorrect == false)),
+            ]),
             _subSection('Residential Address'),
-            Row(children: [
-              Expanded(child: _itemTextField(controller.residentialAddressController, isEnable: false, isMultiLine: true)),
-              SizedBox(
-                  width: 100,
-                  child: Column(children: [
-                    _radioItem('Correct', onTap: () => controller.residentialStatusChanged(1), height: 25, isChecked: controller.residentialStatus == 1),
-                    _radioItem('Incorrect', onTap: () => controller.residentialStatusChanged(0), height: 25, isChecked: controller.residentialStatus == 0),
-                    _radioItem('Unverifiable', onTap: () => controller.residentialStatusChanged(2), height: 25, isChecked: controller.residentialStatus == 2)
-                  ]))
-            ]),
+            _itemTextField(controller.residentialAddressController, isEnable: false, isMultiLine: true),
+            SizedBox(
+                height: 44,
+                child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+                  _radioItem('Correct', onTap: () => controller.residentialStatusChanged(1), height: 25, isChecked: controller.residentialStatus == 1),
+                  _radioItem('Incorrect', onTap: () => controller.residentialStatusChanged(0), height: 25, isChecked: controller.residentialStatus == 0),
+                  _radioItem('Unverifiable', onTap: () => controller.residentialStatusChanged(2), height: 25, isChecked: controller.residentialStatus == 2)
+                ])),
             _subSection('Company Address'),
-            Row(children: [
-              Expanded(child: _itemTextField(controller.companyAddressController, isEnable: false, isMultiLine: true)),
-              SizedBox(
-                  width: 100,
-                  child: Column(children: [
-                    _radioItem('Correct', onTap: () => controller.companyStatusChanged(1), height: 25, isChecked: controller.companyAddressStatus == 1),
-                    _radioItem('Incorrect', onTap: () => controller.companyStatusChanged(0), height: 25, isChecked: controller.companyAddressStatus == 0),
-                    _radioItem('Unverifiable', onTap: () => controller.companyStatusChanged(2), height: 25, isChecked: controller.companyAddressStatus == 2)
-                  ]))
-            ]),
+            _itemTextField(controller.companyAddressController, isEnable: false, isMultiLine: true),
+            SizedBox(
+                height: 44,
+                child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+                  _radioItem('Correct', onTap: () => controller.companyStatusChanged(1), height: 25, isChecked: controller.companyAddressStatus == 1),
+                  _radioItem('Incorrect', onTap: () => controller.companyStatusChanged(0), height: 25, isChecked: controller.companyAddressStatus == 0),
+                  _radioItem('Unverifiable', onTap: () => controller.companyStatusChanged(2), height: 25, isChecked: controller.companyAddressStatus == 2)
+                ])),
             const SizedBox(height: 10),
             Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
               Text('Whether in person', style: TextStyle(color: Global.instance.textPrimaryColor, fontSize: 13)),
@@ -170,13 +168,13 @@ class InterviewDetailView extends StatelessWidget {
             const SizedBox(height: 20),
             _sectionHeader('Asset Class'),
             _subSection('Land'),
-            Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-              Text('Fertile farmland / Wooded area', style: TextStyle(color: Global.instance.textPrimaryColor, fontSize: 15, fontWeight: FontWeight.bold)),
-              Row(children: [
-                _radioItem('Hold', onTap: () => controller.landHoldStatusChanged(true), isChecked: controller.isHoldLand == true),
-                _radioItem('Nothold', onTap: () => controller.landHoldStatusChanged(false), isChecked: controller.isHoldLand == false),
-              ])
-            ]),
+            Text('Fertile farmland / Wooded area', style: TextStyle(color: Global.instance.textPrimaryColor, fontSize: 15, fontWeight: FontWeight.bold)),
+            SizedBox(
+                height: 44,
+                child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+                  _radioItem('Hold', onTap: () => controller.landHoldStatusChanged(true), isChecked: controller.isHoldLand == true),
+                  _radioItem('Nothold', onTap: () => controller.landHoldStatusChanged(false), isChecked: controller.isHoldLand == false),
+                ])),
             if (controller.isHoldLand == true)
               _assetItem(
                 locationOnTap: () => controller.go2selectLocation(LocationOnTapType.land),

@@ -2,6 +2,7 @@ import 'package:investigators/generated/json/base/json_convert_content.dart';
 import 'package:investigators/models/interview_cache_model.dart';
 import 'package:investigators/models/subcategory.dart';
 
+
 InterviewCacheModel $InterviewCacheModelFromJson(Map<String, dynamic> json) {
   final InterviewCacheModel interviewCacheModel = InterviewCacheModel();
   final bool? nameStatus = jsonConvert.convert<bool>(json['name_status']);

@@ -1,6 +1,5 @@
 import 'package:investigators/generated/json/base/json_convert_content.dart';
 import 'package:investigators/models/last_interview_info.dart';
-
 import '../../models/interview_detail_info.dart';
 
 

@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:flutter/widgets.dart';
@@ -19,13 +20,25 @@ class InterviewController extends GetxController {
 
   TextEditingController reasonEditingController = TextEditingController();
 
+  late Timer _timer;
+
   @override
-  void onInit() {
+  void onInit() async {
     super.onInit();
-    onRefresh(true);
+    await onRefresh(true);
+    _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      for (var item in dataList) {
+        int interval = int.parse(item.remainTime);
+        if (interval > 0) {
+          interval--;
+        }
+        item.remainTime = interval.toString();
+        update();
+      }
+    });
   }
 
-  void onRefresh(bool isRefresh) async {
+  Future<void> onRefresh(bool isRefresh) async {
     if (isRefresh) {
       currentPage = 0;
       refreshController.resetNoData();
