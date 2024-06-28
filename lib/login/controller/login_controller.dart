@@ -1,7 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:flutter_nb_net/flutter_net.dart';
 import 'package:get/get.dart';
 import 'package:investigators/common/common_snack_bar.dart';
 import 'package:investigators/network_service/index.dart';
@@ -25,7 +24,7 @@ class LoginController extends GetxController {
         pwdNode.requestFocus();
       }
     });
-    phoneController.text = '9789732334';
+    phoneController.text = '9888888885';
     pwdController.text = '123456';
   }
 
